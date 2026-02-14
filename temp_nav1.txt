@@ -1,0 +1,44 @@
+﻿function showCampusDirectory() {
+            const cardGrid = document.getElementById('card-grid');
+            cardGrid.innerHTML = `
+                <div class="card about-title-card">
+                    <h3><i class="fas fa-map-marked-alt"></i> Campus Directory</h3>
+                    <p>Select a building to view detailed locations</p>
+                </div>
+
+                <div class="building-card" onclick="viewBuilding('Building A')">
+                    <img src="BUILDING A.jpg" alt="Building A">
+                    <div class="building-overlay">
+                        <div class="building-title">Building A</div>
+                        <div class="building-desc">School Stage, Stockrooms, English Faculty</div>
+                    </div>
+                </div>
+
+                <div class="building-card" onclick="viewBuilding('Building B')">
+                    <img src="BUILDING B.jpg" alt="Building B">
+                    <div class="building-overlay">
+                        <div class="building-title">Building B</div>
+                        <div class="building-desc">Principal's Office, Clinic, Dental Office</div>
+                    </div>
+                </div>
+
+                <div class="building-card" onclick="viewBuilding('Building C')">
+                    <img src="BUILDING C.jpg" alt="Building C">
+                    <div class="building-overlay">
+                        <div class="building-title">Building C</div>
+                        <div class="building-desc">Cookery Lab, Computer Lab, E - Library</div>
+                    </div>
+                </div>
+
+                <div class="building-card" onclick="viewBuilding('Building D')">
+                    <img src="BUILDING D.jpg" alt="Building D">
+                    <div class="building-overlay">
+                        <div class="building-title">Building D</div>
+                        <div class="building-desc">Senior High School Wing</div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('assistant-modal').style.display = 'none';
+        }
+
+

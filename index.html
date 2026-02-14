@@ -1,0 +1,361 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Smart Kiosk</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assistant.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="school-info">
+                <div class="school-logo">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h1 data-translate="school_name">Makati High School</h1>
+                    <p class="subtitle" data-translate="subtitle">Smart Kiosk - Enhanced Navigation & Information System
+                    </p>
+                </div>
+            </div>
+            <button class="lang-toggle" onclick="toggleLanguage()" id="lang-toggle-btn">
+                <i class="fas fa-globe"></i>
+                <span id="lang-display">English</span>
+            </button>
+        </header>
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="Search for rooms, people..."
+                        data-translate-placeholder="search_placeholder" onkeypress="checkSearchEnter(event)">
+                    <button id="voice-search-btn" onclick="startVoiceSearch()" title="Voice Search"><i
+                            class="fas fa-microphone"></i></button>
+                    <button id="search-btn" onclick="performSearch()"><i class="fas fa-search"></i></button>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="#" onclick="setActiveNav(this); goHome()" class="active"><i class="fas fa-home"></i>
+                            <span class="nav-text" data-translate="nav.home">Home</span></a></li>
+                    <li><a href="#" onclick="setActiveNav(this); showCampusDirectory()"><i
+                                class="fas fa-map-marked-alt"></i> <span class="nav-text"
+                                data-translate="nav.directory">Campus
+                                Directory</span></a></li>
+                    <li><a href="#" onclick="setActiveNav(this); viewEvents()"><i class="fas fa-calendar-alt"></i>
+                            <span class="nav-text" data-translate="nav.events">Events</span></a></li>
+                    <li><a href="#" onclick="setActiveNav(this); AboutUs()"><i class="fas fa-user-friends"></i> <span
+                                class="nav-text" data-translate="nav.about">About
+                                Us</span></a></li>
+                    <li><a href="#" onclick="setActiveNav(this); viewNews()"><i class="fas fa-newspaper"></i> <span
+                                class="nav-text" data-translate="nav.news">News</span></a>
+                    </li>
+                    <li><a href="#" onclick="setActiveNav(this); viewSurvey()"><i class="fas fa-poll"></i> <span
+                                class="nav-text" data-translate="nav.survey">Survey</span></a>
+                    </li>
+                    <li><a href="#" onclick="setActiveNav(this); viewHelp()"><i class="fas fa-question-circle"></i>
+                            <span class="nav-text" data-translate="nav.help">Help</span></a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <div class="welcome-banner">
+                    <h2 data-translate="welcome">Welcome to Makati High School</h2>
+                    <p id="date-time-display">Loading...</p>
+                </div>
+                <div class="card-grid" id="card-grid">
+                    <div class="card" id="events-card">
+                        <h3><i class="fas fa-calendar-day"></i> Upcoming Events</h3>
+                        <ul class="event-list">
+                            <li><span>Science Fair</span> <span class="event-date">Feb 20, 9:00 AM</span></li>
+                            <li><span>Basketball Tournament</span> <span class="event-date">Feb 25, 3:00 PM</span></li>
+                            <li><span>Parent-Teacher Conference</span> <span class="event-date">Feb 28, 1:00 PM</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card" id="announcements-card">
+                        <h3><i class="fas fa-clipboard-list"></i> Announcements</h3>
+                        <ul class="event-list">
+                            <li>Yearbook photos will be taken next week</li>
+                            <li>Library will close early on Friday</li>
+                            <li>New cafeteria menu now available</li>
+                        </ul>
+                    </div>
+                    <div class="card" id="directory-card">
+                        <h3><i class="fas fa-map-marked-alt"></i> Campus Directory</h3>
+                        <div class="campus-map-container">
+                            <svg id="campus-map-svg" viewBox="0 0 800 600"
+                                style="width: 100%; height: 350px; cursor: pointer;">
+                                <!-- Background -->
+                                <rect width="800" height="600" fill="#f0f4f8" />
+
+                                <!-- Building A (Left side - Cyan/Teal) -->
+                                <g id="building-a" class="building-svg" onclick="viewBuilding('Building A')"
+                                    style="cursor: pointer;">
+                                    <rect x="40" y="200" width="140" height="280" fill="#00bcd4" stroke="#00838f"
+                                        stroke-width="4" rx="5" />
+                                    <!-- Windows -->
+                                    <rect x="55" y="220" width="30" height="35" fill="#b2ebf2" />
+                                    <rect x="95" y="220" width="30" height="35" fill="#b2ebf2" />
+                                    <rect x="135" y="220" width="30" height="35" fill="#b2ebf2" />
+                                    <rect x="55" y="270" width="30" height="35" fill="#b2ebf2" />
+                                    <rect x="95" y="270" width="30" height="35" fill="#b2ebf2" />
+                                    <rect x="135" y="270" width="30" height="35" fill="#b2ebf2" />
+                                    <rect x="55" y="320" width="30" height="35" fill="#b2ebf2" />
+                                    <rect x="95" y="320" width="30" height="35" fill="#b2ebf2" />
+                                    <rect x="135" y="320" width="30" height="35" fill="#b2ebf2" />
+                                    <!-- Door -->
+                                    <rect x="85" y="430" width="50" height="40" fill="#006064" />
+                                    <!-- Label -->
+                                    <text x="110" y="400" text-anchor="middle" fill="white" font-size="32"
+                                        font-weight="bold">A</text>
+                                    <text x="110" y="185" text-anchor="middle" fill="#00838f" font-size="14"
+                                        font-weight="bold">BLDG. A</text>
+                                </g>
+
+                                <!-- Building B (Center-left - Yellow) -->
+                                <g id="building-b" class="building-svg" onclick="viewBuilding('Building B')"
+                                    style="cursor: pointer;">
+                                    <rect x="220" y="240" width="200" height="180" fill="#ffc107" stroke="#f57f17"
+                                        stroke-width="4" rx="5" />
+                                    <!-- Windows -->
+                                    <rect x="235" y="260" width="35" height="30" fill="#fff9c4" />
+                                    <rect x="280" y="260" width="35" height="30" fill="#fff9c4" />
+                                    <rect x="325" y="260" width="35" height="30" fill="#fff9c4" />
+                                    <rect x="370" y="260" width="35" height="30" fill="#fff9c4" />
+                                    <rect x="235" y="305" width="35" height="30" fill="#fff9c4" />
+                                    <rect x="280" y="305" width="35" height="30" fill="#fff9c4" />
+                                    <rect x="325" y="305" width="35" height="30" fill="#fff9c4" />
+                                    <rect x="370" y="305" width="35" height="30" fill="#fff9c4" />
+                                    <!-- Door -->
+                                    <rect x="290" y="370" width="50" height="40" fill="#f57f17" />
+                                    <!-- Label -->
+                                    <text x="320" y="360" text-anchor="middle" fill="white" font-size="32"
+                                        font-weight="bold">B</text>
+                                    <text x="320" y="225" text-anchor="middle" fill="#f57f17" font-size="14"
+                                        font-weight="bold">BLDG. B</text>
+                                </g>
+
+                                <!-- Building C (Top-right - Purple L-shape) -->
+                                <g id="building-c" class="building-svg" onclick="viewBuilding('Building C')"
+                                    style="cursor: pointer;">
+                                    <!-- Vertical part of L -->
+                                    <rect x="550" y="80" width="120" height="320" fill="#9c27b0" stroke="#6a1b9a"
+                                        stroke-width="4" rx="5" />
+                                    <!-- Horizontal part of L -->
+                                    <rect x="450" y="80" width="100" height="140" fill="#9c27b0" stroke="#6a1b9a"
+                                        stroke-width="4" rx="5" />
+                                    <!-- Windows on vertical part -->
+                                    <rect x="565" y="100" width="30" height="30" fill="#e1bee7" />
+                                    <rect x="620" y="100" width="30" height="30" fill="#e1bee7" />
+                                    <rect x="565" y="150" width="30" height="30" fill="#e1bee7" />
+                                    <rect x="620" y="150" width="30" height="30" fill="#e1bee7" />
+                                    <rect x="565" y="200" width="30" height="30" fill="#e1bee7" />
+                                    <rect x="620" y="200" width="30" height="30" fill="#e1bee7" />
+                                    <rect x="565" y="250" width="30" height="30" fill="#e1bee7" />
+                                    <rect x="620" y="250" width="30" height="30" fill="#e1bee7" />
+                                    <!-- Windows on horizontal part -->
+                                    <rect x="465" y="100" width="30" height="30" fill="#e1bee7" />
+                                    <rect x="505" y="100" width="30" height="30" fill="#e1bee7" />
+                                    <rect x="465" y="150" width="30" height="30" fill="#e1bee7" />
+                                    <rect x="505" y="150" width="30" height="30" fill="#e1bee7" />
+                                    <!-- Door -->
+                                    <rect x="585" y="350" width="50" height="40" fill="#6a1b9a" />
+                                    <!-- Label -->
+                                    <text x="610" y="320" text-anchor="middle" fill="white" font-size="32"
+                                        font-weight="bold">C</text>
+                                    <text x="500" y="60" text-anchor="middle" fill="#6a1b9a" font-size="14"
+                                        font-weight="bold">BLDG. C</text>
+                                </g>
+
+                                <!-- Building D (Bottom-center - Red/Brown) -->
+                                <g id="building-d" class="building-svg" onclick="viewBuilding('Building D')"
+                                    style="cursor: pointer;">
+                                    <rect x="280" y="450" width="180" height="110" fill="#d32f2f" stroke="#b71c1c"
+                                        stroke-width="4" rx="5" />
+                                    <!-- Windows -->
+                                    <rect x="295" y="470" width="35" height="30" fill="#ffcdd2" />
+                                    <rect x="340" y="470" width="35" height="30" fill="#ffcdd2" />
+                                    <rect x="385" y="470" width="35" height="30" fill="#ffcdd2" />
+                                    <rect x="430" y="470" width="35" height="30" fill="#ffcdd2" />
+                                    <!-- Door -->
+                                    <rect x="345" y="515" width="50" height="35" fill="#b71c1c" />
+                                    <!-- Label -->
+                                    <text x="370" y="510" text-anchor="middle" fill="white" font-size="28"
+                                        font-weight="bold">D</text>
+                                    <text x="370" y="435" text-anchor="middle" fill="#b71c1c" font-size="14"
+                                        font-weight="bold">BLDG. D</text>
+                                </g>
+
+                                <!-- "YOU ARE HERE" marker -->
+                                <g>
+                                    <circle cx="720" cy="350" r="35" fill="#ff5252" opacity="0.9" />
+                                    <text x="720" y="345" text-anchor="middle" fill="white" font-size="12"
+                                        font-weight="bold">YOU ARE</text>
+                                    <text x="720" y="360" text-anchor="middle" fill="white" font-size="12"
+                                        font-weight="bold">HERE!</text>
+                                </g>
+
+                                <!-- Title -->
+                                <text x="400" y="30" text-anchor="middle" fill="#2c3e50" font-size="22"
+                                    font-weight="bold">MAKATI HIGH SCHOOL - GROUND FLOOR</text>
+                                <text x="400" y="50" text-anchor="middle" fill="#7f8c8d" font-size="12">Click on any
+                                    building to explore</text>
+                            </svg>
+                        </div>
+                        <ul class="directory-list" style="margin-top: 15px;">
+                            <li><span>Building A</span> <span>Classrooms</span></li>
+                            <li><span>Building B</span> <span>Labs & Library</span></li>
+                            <li><span>Building C</span> <span>Admin Offices</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="map-container" id="map-container">
+                    <iframe width="100%" height="400" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"
+                        id="gmap_canvas"
+                        src="https://maps.google.com/maps?width=950&amp;height=400&amp;hl=en&amp;q=Gen.%20Luna%20Street%20Poblacion,%20Makati%20City%20Makati+(Makati%20High%20School)&amp;t=h&amp;z=18&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"></iframe>
+                    <a href='https://www.acadoo.de/'>ghostwriting</a>
+                    <script type='text/javascript'
+                        src='https://embedmaps.com/google-maps-authorization/script.js?id=dfe4639903d7cc4e19f8305d70f67ed7e9b2c164'></script>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <p>Makati High School Smart Kiosk | Gen. Luna Street Poblacion, Makati City | Principal's Office :
+                890-8320 / 890-5938</p>
+            <p>© 2025 Makati High School. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Campus Map Modal -->
+    <div class="map-modal" id="map-modal">
+        <div class="map-modal-content">
+            <h3 style="margin-bottom: 15px; color: #2c3e50;"><i class="fas fa-map-marked-alt"></i> Makati High School
+                Campus Map</h3>
+            <img src="Intelliguide.jpg" alt="Makati High School Campus Map"
+                style="max-width: 100%; max-height: 70vh; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+            <button class="close-map-modal" onclick="closeMapModal()">Close Map</button>
+        </div>
+    </div>
+
+    <!-- Mini Assistant Button -->
+    <div class="mini-assistant" id="mini-assistant">
+        <i class="fas fa-graduation-cap"></i>
+    </div>
+
+    <!-- Assistant Modal -->
+    <div class="assistant-modal" id="assistant-modal">
+        <div class="modal-content">
+            <h3 data-translate="assistant.title">School Assistant</h3>
+            <p id="assistant-greeting" class="typing" data-translate="assistant.greeting">How can I help you today?</p>
+            <div class="assistant-buttons">
+                <button class="assistant-btn flash" id="navigate-btn" onclick="navigateRooms()"><i
+                        class="fas fa-route"></i> <span data-translate="assistant.navigate">Navigate
+                        Rooms</span></button>
+                <button class="assistant-btn flash" id="events-btn" onclick="viewEvents()"><i
+                        class="fas fa-calendar-day"></i> <span data-translate="assistant.events">View
+                        Events</span></button>
+                <button class="assistant-btn flash" id="announcements-btn" onclick="readAnnouncements()"><i
+                        class="fas fa-clipboard-list"></i> <span data-translate="assistant.announcements">Read
+                        Announcements</span></button>
+
+                <button class="assistant-btn" onclick="callSchool()"><i class="fas fa-phone"></i> <span
+                        data-translate="assistant.call">Call School</span></button>
+                <button class="assistant-btn" onclick="showDirectory()"><i class="fas fa-users"></i> <span
+                        data-translate="assistant.directory">Staff Directory</span></button>
+                <button class="assistant-btn" onclick="openChatbot()"><i class="fas fa-robot"></i> <span
+                        data-translate="assistant.chatbot">Chat with AI</span></button>
+            </div>
+            <button class="close-modal" id="close-modal" data-translate="buttons.close">Close</button>
+        </div>
+    </div>
+
+    <!-- Rating Modal -->
+    <div class="rating-modal" id="rating-modal">
+        <div class="close-rating" onclick="closeRatingModal()">&times;</div>
+        <h3 style="color: #2c3e50; margin-bottom: 5px;">Rate Your Experience</h3>
+        <p style="font-size: 0.9rem; color: #777;">How likely are you to recommend us?</p>
+        <div class="rating-stars" id="rating-stars">
+            <i class="fas fa-star" onclick="rate(1)"></i>
+            <i class="fas fa-star" onclick="rate(2)"></i>
+            <i class="fas fa-star" onclick="rate(3)"></i>
+            <i class="fas fa-star" onclick="rate(4)"></i>
+            <i class="fas fa-star" onclick="rate(5)"></i>
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <!-- Assistant Modal Functions -->
+    <!-- Virtual Keyboard -->
+    <div class="keyboard-container" id="virtual-keyboard">
+        <button class="key close-keyboard" onclick="closeKeyboard()"><i class="fas fa-times"></i> Close</button>
+        <div class="keyboard-row">
+            <button class="key" onclick="typeKey('1')">1</button>
+            <button class="key" onclick="typeKey('2')">2</button>
+            <button class="key" onclick="typeKey('3')">3</button>
+            <button class="key" onclick="typeKey('4')">4</button>
+            <button class="key" onclick="typeKey('5')">5</button>
+            <button class="key" onclick="typeKey('6')">6</button>
+            <button class="key" onclick="typeKey('7')">7</button>
+            <button class="key" onclick="typeKey('8')">8</button>
+            <button class="key" onclick="typeKey('9')">9</button>
+            <button class="key" onclick="typeKey('0')">0</button>
+        </div>
+        <div class="keyboard-row">
+            <button class="key" onclick="typeKey('Q')">Q</button>
+            <button class="key" onclick="typeKey('W')">W</button>
+            <button class="key" onclick="typeKey('E')">E</button>
+            <button class="key" onclick="typeKey('R')">R</button>
+            <button class="key" onclick="typeKey('T')">T</button>
+            <button class="key" onclick="typeKey('Y')">Y</button>
+            <button class="key" onclick="typeKey('U')">U</button>
+            <button class="key" onclick="typeKey('I')">I</button>
+            <button class="key" onclick="typeKey('O')">O</button>
+            <button class="key" onclick="typeKey('P')">P</button>
+        </div>
+        <div class="keyboard-row">
+            <button class="key special" id="caps-lock-btn" onclick="toggleCapsLock()"><i
+                    class="fas fa-arrow-up"></i></button>
+            <button class="key" onclick="typeKey('A')">A</button>
+            <button class="key" onclick="typeKey('S')">S</button>
+            <button class="key" onclick="typeKey('D')">D</button>
+            <button class="key" onclick="typeKey('F')">F</button>
+            <button class="key" onclick="typeKey('G')">G</button>
+            <button class="key" onclick="typeKey('H')">H</button>
+            <button class="key" onclick="typeKey('J')">J</button>
+            <button class="key" onclick="typeKey('K')">K</button>
+            <button class="key" onclick="typeKey('L')">L</button>
+        </div>
+        <div class="keyboard-row">
+            <button class="key" onclick="typeKey('Z')">Z</button>
+            <button class="key" onclick="typeKey('X')">X</button>
+            <button class="key" onclick="typeKey('C')">C</button>
+            <button class="key" onclick="typeKey('V')">V</button>
+            <button class="key" onclick="typeKey('B')">B</button>
+            <button class="key" onclick="typeKey('N')">N</button>
+            <button class="key" onclick="typeKey('M')">M</button>
+            <button class="key special" onclick="typeKey('BACKSPACE')"><i class="fas fa-backspace"></i></button>
+        </div>
+        <div class="keyboard-row">
+            <button class="key space" onclick="typeKey('SPACE')">SPACE</button>
+            <button class="key special" onclick="typeKey('ENTER')">ENTER</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="voice_search.js"></script>
+    <script src="js/building-data.js"></script>
+    <script src="js/language-tts.js"></script>
+    <script src="js/keyboard.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
