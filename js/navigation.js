@@ -7,6 +7,15 @@ function goHome() {
     location.reload();
 }
 
+// Navigate Rooms function - Shows campus directory for navigation
+function navigateRooms() {
+    // Simply call the campus directory function
+    showCampusDirectory();
+    // Close the assistant modal
+    const modal = document.getElementById('assistant-modal');
+    if (modal) modal.style.display = 'none';
+}
+
 function showCampusDirectory() {
     const cardGrid = document.getElementById('card-grid');
     cardGrid.innerHTML = `
@@ -172,10 +181,14 @@ function rate(stars) {
         rating: stars
     };
     // Save to LocalStorage
-    let storedData = localStorage.getItem('survey_responses');
-    let responses = storedData ? JSON.parse(storedData) : [];
-    responses.push(ratingData);
-    localStorage.setItem('survey_responses', JSON.stringify(responses));
+    try {
+        let storedData = localStorage.getItem('survey_responses');
+        let responses = storedData ? JSON.parse(storedData) : [];
+        responses.push(ratingData);
+        localStorage.setItem('survey_responses', JSON.stringify(responses));
+    } catch (e) {
+        console.warn('LocalStorage access denied.');
+    }
 
     setTimeout(() => {
         alert('Thank you for your feedback! We appreciate your ' + stars + ' star rating.');
@@ -188,16 +201,16 @@ function rate(stars) {
 function viewSurvey() {
     const cardGrid = document.getElementById('card-grid');
     const questions = [
-        "Do you find the real-time announcements helpful in staying updated with school events and notices?",
-        "Does the interactive map make it easier for you to locate rooms and facilities inside the school?",
-        "Is the voice-touch inquiry feature convenient and accessible for you to use?",
-        "Does the search function help you quickly and accurately find the information you need?",
-        "Do you find the kiosk more reliable than bulletin boards or word-of-mouth announcements?",
-        "Does using the kiosk help you save time in getting information compared to traditional methods?",
-        "Do you feel more confident that the information from the kiosk is correct and updated?",
-        "Does the kiosk make it easier to complete multiple tasks (e.g., checking schedules, announcements, menus)?",
-        "Do you find the kiosk easy to use and understand, even without assistance?",
-        "Overall, do you think the Intelliguide kiosk is a helpful tool for navigation and information access in school?"
+        "The AI-powered kiosk is easy to access when I need school information.",
+        "The kiosk interface is easy to understand and use without assistance.",
+        "The kiosk is convenient and available for students, staff, and visitors.",
+        "The kiosk allows me to get school information faster than traditional methods.",
+        "The search function helps me find information quickly.",
+        "Using the kiosk saves me time when checking schedules, announcements, or events.",
+        "The kiosk makes it easier to find rooms and school facilities.",
+        "The interactive map helps me navigate the campus efficiently.",
+        "The kiosk provides accurate and reliable school information.",
+        "Overall, I am satisfied with the kiosk as a tool for information access and navigation."
     ];
 
     let questionsHtml = '';
@@ -306,17 +319,28 @@ function submitSurvey(e) {
     };
 
     // Save to LocalStorage
-    let storedData = localStorage.getItem('survey_responses');
-    let responses = storedData ? JSON.parse(storedData) : [];
-    responses.push(responseData);
-    localStorage.setItem('survey_responses', JSON.stringify(responses));
+    try {
+        let storedData = localStorage.getItem('survey_responses');
+        let responses = storedData ? JSON.parse(storedData) : [];
+        responses.push(responseData);
+        localStorage.setItem('survey_responses', JSON.stringify(responses));
+    } catch (e) {
+        console.warn('LocalStorage access denied.');
+    }
 
     alert("Thank you for your feedback! Your responses have been saved.");
     location.reload();
 }
 
 function exportData() {
-    let storedData = localStorage.getItem('survey_responses');
+    let storedData = null;
+    try {
+        storedData = localStorage.getItem('survey_responses');
+    } catch (e) {
+        alert("Cannot export data: Storage access denied (file:// protocol restrictions).");
+        return;
+    }
+
     if (!storedData) {
         alert("No data to export.");
         return;
@@ -372,16 +396,37 @@ function exportData() {
 // View Events function
 function viewEvents() {
     const cardGrid = document.getElementById('card-grid');
+
+    // Default Events
+    const defaultEvents = [
+        { title: "Science Fair", date: "Feb 20, 9:00 AM" },
+        { title: "Basketball Tournament", date: "Feb 25, 3:00 PM" },
+        { title: "Parent-Teacher Conference", date: "Feb 28, 1:00 PM" },
+        { title: "Math Olympiad", date: "Mar 5, 8:00 AM" },
+        { title: "Arts Festival", date: "Mar 15, 10:00 AM" },
+        { title: "Graduation Ceremony", date: "Mar 27, 2:00 PM" }
+    ];
+
+    let events = defaultEvents;
+    try {
+        const storedEvents = localStorage.getItem('kiosk_events');
+        if (storedEvents) {
+            events = JSON.parse(storedEvents);
+        }
+    } catch (e) {
+        console.warn('Error loading events:', e);
+    }
+
+    let eventsHtml = '';
+    events.forEach(event => {
+        eventsHtml += `<li><span>${event.title}</span> <span class="event-date">${event.date}</span></li>`;
+    });
+
     cardGrid.innerHTML =
         '<div class="card">' +
         '<h3><i class="fas fa-calendar-day"></i> Upcoming Events</h3>' +
         '<ul class="event-list">' +
-        '<li><span>Science Fair</span> <span class="event-date">Feb 20, 9:00 AM</span></li>' +
-        '<li><span>Basketball Tournament</span> <span class="event-date">Feb 25, 3:00 PM</span></li>' +
-        '<li><span>Parent-Teacher Conference</span> <span class="event-date">Feb 28, 1:00 PM</span></li>' +
-        '<li><span>Math Olympiad</span> <span class="event-date">Mar 5, 8:00 AM</span></li>' +
-        '<li><span>Arts Festival</span> <span class="event-date">Mar 15, 10:00 AM</span></li>' +
-        '<li><span>Graduation Ceremony</span> <span class="event-date">Mar 27, 2:00 PM</span></li>' +
+        eventsHtml +
         '</ul>' +
         '</div>';
     const modal = document.getElementById('assistant-modal');
@@ -391,38 +436,32 @@ function AboutUs() {
     const cardGrid = document.getElementById('card-grid');
     cardGrid.innerHTML = `
         <div class="card about-title-card">
-            <h3><i class="fas fa-users"></i> Our Research Team</h3>
-            <p>Meet the dedicated minds behind this project</p>
+            <h3><i class="fas fa-users"></i> ${translate('team.our_research_team')}</h3>
+            <p>${translate('team.meet_team')}</p>
         </div>
         
         <div class="card member-card">
             <img src="https://i.pinimg.com/originals/9f/4c/f0/9f4cf0f24b376077a2fcdab2e85c3584.jpg" onerror="this.src='placeholderimg.jpg'" alt="Clarence Andrei B. Santelices" class="member-image">
             <div class="member-name">SANTELICES, CLARENCE ANDREI B.</div>
-            <div class="member-role">Research Leader</div>
+            <div class="member-role">${translate('team.research_leader')}</div>
         </div>
 
         <div class="card member-card">
             <img src="https://i.pinimg.com/originals/9f/4c/f0/9f4cf0f24b376077a2fcdab2e85c3584.jpg" onerror="this.src='placeholderimg.jpg'" alt="Christian Lloyd M. Aragon" class="member-image">
             <div class="member-name">ARAGON, CHRISTIAN LLOYD M.</div>
-            <div class="member-role">Co-Researcher</div>
+            <div class="member-role">${translate('team.co_researcher')}</div>
         </div>
 
         <div class="card member-card">
             <img src="libee.jpg" onerror="this.src='placeholderimg.jpg'" alt="John Libee L. Galano" class="member-image">
             <div class="member-name">GALANO, JOHN LIBEE L.</div>
-            <div class="member-role">Co-Researcher</div>
+            <div class="member-role">${translate('team.co_researcher')}</div>
         </div>
 
         <div class="card member-card">
             <img src="https://i.pinimg.com/originals/9f/4c/f0/9f4cf0f24b376077a2fcdab2e85c3584.jpg" onerror="this.src='placeholderimg.jpg'" alt="Mikeria Angela F. Morondos" class="member-image">
             <div class="member-name">MORONDOS, MIKERIA ANGELA F.</div>
-            <div class="member-role">Co-Researcher</div>
-        </div>
-
-        <div class="card member-card">
-            <img src="https://i.pinimg.com/originals/9f/4c/f0/9f4cf0f24b376077a2fcdab2e85c3584.jpg" onerror="this.src='placeholderimg.jpg'" alt="Christopher P. Cruz" class="member-image">
-            <div class="member-name">CRUZ, CHRISTOPHER P.</div>
-            <div class="member-role">Research Teacher</div>
+            <div class="member-role">${translate('team.co_researcher')}</div>
         </div>
     `;
     const modal = document.getElementById('assistant-modal');
@@ -431,16 +470,37 @@ function AboutUs() {
 
 function readAnnouncements() {
     const cardGrid = document.getElementById('card-grid');
+
+    // Default Announcements
+    const defaultAnnouncements = [
+        "Fourth Quarter Exams scheduled for March 19 and 20, 2026",
+        "End-of-School-Year Rites on March 30-31, 2026",
+        "Parent-Teacher Conference after quarterly exams",
+        "Submit all clearance requirements before EOSY Rites",
+        "Report cards will be distributed after quarter exams",
+        "School Year 2025-2026 ends on March 31, 2026"
+    ];
+
+    let announcements = defaultAnnouncements;
+    try {
+        const storedAnnouncements = localStorage.getItem('kiosk_announcements');
+        if (storedAnnouncements) {
+            announcements = JSON.parse(storedAnnouncements);
+        }
+    } catch (e) {
+        console.warn('Error loading announcements:', e);
+    }
+
+    let announcementsHtml = '';
+    announcements.forEach(announcement => {
+        announcementsHtml += `<li>${announcement}</li>`;
+    });
+
     cardGrid.innerHTML =
         '<div class="card">' +
         '<h3><i class="fas fa-bullhorn"></i> School Announcements</h3>' +
         '<ul class="event-list">' +
-        '<li>Yearbook photos will be taken next week</li>' +
-        '<li>Library will close early on Friday</li>' +
-        '<li>New cafeteria menu now available</li>' +
-        '<li>ID renewal deadline is December 10</li>' +
-        '<li>Report cards will be distributed on Friday</li>' +
-        '<li>School will be closed on December 25-January 1</li>' +
+        announcementsHtml +
         '</ul>' +
         '</div>';
     const modal = document.getElementById('assistant-modal');
@@ -504,6 +564,35 @@ function showDirectory() {
 
 function viewNews() {
     const cardGrid = document.getElementById('card-grid');
+
+    // Check if online
+    const isOnline = navigator.onLine;
+
+    let embedContent = '';
+    if (isOnline) {
+        embedContent = `
+            <!-- Facebook Page Plugin Iframe -->
+            <!-- Note: Facebook Plugin max width is 500px. We center it here. Sandbox prevents redirection. -->
+            <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FmakatiHS1968%2F&tabs=timeline&width=500&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId" 
+                width="500" 
+                height="500" 
+                style="border:none; overflow:hidden; max-width: 100%;" 
+                scrolling="no" 
+                frameborder="0" 
+                allowfullscreen="true" 
+                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                sandbox="allow-scripts allow-same-origin allow-popups">
+            </iframe>`;
+    } else {
+        embedContent = `
+            <div style="padding: 40px; text-align: center; color: #666;">
+                <div style="font-size: 3rem; margin-bottom: 20px;">📡</div>
+                <h3 style="color: #e74c3c; margin-bottom: 10px;">Offline Mode</h3>
+                <p style="margin-bottom: 10px;">The News section requires an internet connection.</p>
+                <p style="font-size: 0.9rem;">Please connect to the internet to view the latest updates from Makati High School.</p>
+            </div>`;
+    }
+
     cardGrid.innerHTML = `
         <div class="card about-title-card">
             <h3><i class="fas fa-newspaper"></i> Campus News</h3>
@@ -511,8 +600,7 @@ function viewNews() {
         </div>
 
         <div class="card" style="grid-column: 1 / -1; display: flex; justify-content: center; overflow: hidden;">
-            <!-- Facebook Page Plugin Iframe -->
-            <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Ffacebook&tabs=timeline&width=500&height=800&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId" width="500" height="800" style="border:none;overflow:hidden; max-width: 100%;" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+            ${embedContent}
             
             <div style="margin-top: 20px; text-align: center; color: #666; font-size: 0.9rem; width: 100%; display: none;">
                 <p>To change the Facebook page, edit the <code>src</code> attribute in the <code>viewNews</code> function inside Kiosk.html</p>
@@ -535,7 +623,7 @@ function openChatbot() {
         <div class="card" style="grid-column: 1 / -1; min-height: 600px; padding: 0; overflow: hidden; display: flex; flex-direction: column;">
             <div class="chatbot-container" style="width: 100%; height: 600px; position: relative;">
                 <iframe
-                    src="https://www.chatbase.co/chatbot-iframe/ONi3F76UOQ5dRrwX6NybY"
+                    src="https://www.chatbase.co/ONi3F76UOQ5dRrwX6NybY/help"
                     title="Jelioo Kiosk Chatbot"
                     style="width: 100%; height: 100%; border: none; border-radius: 10px;"
                     frameborder="0">
@@ -562,7 +650,7 @@ function viewSpecificRoom(buildingName, roomCode, roomData) {
         imgSrc = buildingImages[buildingName].rooms[roomCode];
     }
 
-    const label = roomData ? roomData.label : `Room ${roomCode}`;
+    const label = roomData ? roomData.label : (roomCode.startsWith('Room ') ? roomCode : `Room ${roomCode}`);
     const desc = roomData ? roomData.desc : 'Standard Classroom';
 
     // Determine floor display safely
@@ -575,6 +663,14 @@ function viewSpecificRoom(buildingName, roomCode, roomData) {
         // Fallback if we can't determine floor from code or data
         floorDisplay = "See Directory";
     }
+
+    // Create TTS content for the room description
+    const ttsContent = [
+        `${label}`,
+        `Located in ${buildingName}, ${floorDisplay}`,
+        `${desc}`
+    ];
+    const ttsJSON = JSON.stringify(ttsContent).replace(/"/g, '&quot;');
 
     cardGrid.innerHTML = `
         <div class="card" style="grid-column: 1 / -1; display:flex; align-items:center; gap:15px; background:linear-gradient(to right, #4ca1af, #2c3e50); color:white;">
@@ -596,6 +692,13 @@ function viewSpecificRoom(buildingName, roomCode, roomData) {
                 </span>
             </div>
             <p style="text-align:center; color:#666; margin-top:15px;">${desc}</p>
+
+            <!-- TTS Button -->
+            <div class="tts-controls" style="text-align: center; margin: 15px 0;">
+                <button class="tts-btn" id="room-tts-btn" onclick='toggleTTS(${ttsJSON}, "room-tts-btn")' style="background:#3498db; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-size:0.9rem;">
+                    <i class="fas fa-volume-up"></i> ${translate('buttons.play_audio')}
+                </button>
+            </div>
 
             <!-- Navigation Placeholder Card -->
             <div onclick="showNavigation('${buildingName}', '${label}')" style="margin-top: 20px; border: 2px dashed #4ca1af; border-radius: 10px; padding: 15px; background: #f9ffff; cursor: pointer; transition: background 0.3s; text-align: center;">
@@ -669,7 +772,7 @@ function showNavigation(buildingName, destinationLabel) {
     const cardGrid = document.getElementById('card-grid');
 
     // Try to find the room data to get the directional image and text directions
-    let directionalImage = 'https://via.placeholder.com/600x400?text=Map+Route+Placeholder';
+    let directionalImage = 'placeholderimg.jpg'; // Better local fallback
     let textDirections = null;
     let roomFound = false;
 
@@ -682,7 +785,14 @@ function showNavigation(buildingName, destinationLabel) {
             if (match) {
                 if (match.directions) {
                     directionalImage = match.directions;
+                } else if (match.img) {
+                    // Fallback to room image if no specific direction map
+                    directionalImage = match.img;
+                } else if (bData.floors[floor]) {
+                    // Fallback to floor plan if no room image
+                    directionalImage = bData.floors[floor];
                 }
+
                 if (match.textDirections) {
                     textDirections = match.textDirections;
                 }
@@ -732,11 +842,11 @@ function showNavigation(buildingName, destinationLabel) {
             <button onclick="window.history.back(); location.reload();" style="background:rgba(255,255,255,0.2); border:none; color:white; padding:10px 15px; border-radius:5px; cursor:pointer; font-size:1rem;">
                 <i class="fas fa-arrow-left"></i> ${translate('buttons.back')}
             </button>
-            <h3 style="margin:0; border:none; color:white;">${translate('headers.navigation')}: Route to ${destinationLabel}</h3>
+            <h3 style="margin:0; border:none; color:white;">${translate('headers.navigation')}: Routing ${destinationLabel}</h3>
         </div>
 
         <div class="card" style="grid-column: 1 / -1; min-height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
-            <img src="${directionalImage}" onerror="this.src='https://via.placeholder.com/600x400?text=Map+Route+Placeholder'" alt="Navigation Map" style="max-width: 500px; width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 20px;">
+            <img src="${directionalImage}" onerror="this.src='placeholderimg.jpg'" alt="Navigation Map" style="max-width: 500px; width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 20px;">
             
             <div style="background: #e8f6f3; padding: 20px; border-radius: 10px; border-left: 5px solid #2ecc71; max-width: 600px; width: 100%; text-align: left;">
                 <h4 style="color: #2c3e50; margin-bottom: 15px;"><i class="fas fa-walking"></i> ${translate('headers.directions')}</h4>
@@ -805,6 +915,10 @@ function viewHelp() {
                 <p style="font-size: 0.85rem; color: #888;">Available 7:00 AM - 5:00 PM</p>
             </div>
             <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+                <input type="file" id="admin-upload" style="display: none;" accept=".json,.txt,.pdf,.docx" onchange="handleFileUpload(this)">
+                <button onclick="document.getElementById('admin-upload').click()" style="background: none; border: none; font-size: 0.8rem; color: #999; cursor: pointer; margin-right: 10px;">
+                    <i class="fas fa-upload"></i> Admin: Upload Data
+                </button>
                 <button onclick="exportData()" style="background: none; border: none; font-size: 0.8rem; color: #999; cursor: pointer;">
                     <i class="fas fa-download"></i> Admin: Export Data
                 </button>
@@ -813,4 +927,41 @@ function viewHelp() {
     `;
     const modal = document.getElementById('assistant-modal');
     if (modal) modal.style.display = 'none';
+}
+
+function handleFileUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const fileName = file.name.toLowerCase();
+
+    if (fileName.endsWith('.json')) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            try {
+                const data = JSON.parse(e.target.result);
+
+                if (data.events && Array.isArray(data.events)) {
+                    localStorage.setItem('kiosk_events', JSON.stringify(data.events));
+                }
+
+                if (data.announcements && Array.isArray(data.announcements)) {
+                    localStorage.setItem('kiosk_announcements', JSON.stringify(data.announcements));
+                }
+
+                alert('Kiosk data updated successfully!');
+                location.reload(); // Reload to show changes
+            } catch (error) {
+                alert('Error parsing JSON file. Please ensure it is a valid JSON format.');
+                console.error(error);
+            }
+        };
+        reader.readAsText(file);
+    } else {
+        // For PDF, DOCX, etc. - simulate upload for now as we can't parse them client-side easily without libs
+        alert(`File "${file.name}" uploaded! \n\nNote: Automatic parsing for non-JSON files (PDF/DOCX) requires a backend server. \n\nFor this local version, please use the provided JSON template for immediate updates.`);
+    }
+
+    // Reset input
+    input.value = '';
 }

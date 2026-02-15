@@ -1,7 +1,12 @@
 // Language Toggle and TTS System
 
 // Global language state
-let currentLang = localStorage.getItem('kioskLanguage') || 'en';
+let currentLang = 'en';
+try {
+    currentLang = localStorage.getItem('kioskLanguage') || 'en';
+} catch (e) {
+    console.warn('LocalStorage access denied (likely file:// protocol). Defaulting to English.');
+}
 let speechSynthesis = window.speechSynthesis;
 let currentUtterance = null;
 
@@ -71,6 +76,73 @@ const translations = {
             we_could_not_find: "We could not find",
             search_tips: "The item you are looking for is not found in our database. Please check the spelling or try searching for major facilities like 'Library', 'Clinic', or 'Canteen'.",
             loading: "Loading..."
+        },
+        homepage: {
+            upcoming_events_title: "Upcoming Events",
+            announcements_title: "Announcements",
+            campus_directory_title: "Campus Directory",
+            select_building_desc: "Select a building to view detailed locations"
+        },
+        events: {
+            fourth_quarter_exams: "Fourth Quarter Exams",
+            eosy_rites: "End-of-School-Year Rites",
+            parent_teacher_conf: "Parent-Teacher Conference",
+            after_quarter_exams: "After Quarter Exams"
+        },
+        announcements: {
+            exams_scheduled: "Fourth Quarter Exams scheduled for March 19 and 20, 2026",
+            eosy_march: "End-of-School-Year Rites on March 30-31, 2026",
+            ptc_after_exams: "Parent-Teacher Conference after quarterly exams",
+            submit_clearance: "Submit all clearance requirements before EOSY Rites",
+            report_cards: "Report cards will be distributed after quarter exams",
+            school_year_ends: "School Year 2025-2026 ends on March 31, 2026"
+        },
+        team: {
+            our_research_team: "Our Research Team",
+            meet_team: "Meet the dedicated minds behind this project",
+            research_leader: "Research Leader",
+            co_researcher: "Co-Researcher"
+        },
+        survey: {
+            title: "User Feedback Survey",
+            question1: "How would you rate your overall experience with the kiosk?",
+            question2: "Was the information you were looking for easy to find?",
+            question3: "How helpful was the navigation system?",
+            question4: "Would you recommend this kiosk to others?",
+            question5: "Please share any suggestions for improvement:",
+            very_poor: "Very Poor",
+            poor: "Poor",
+            average: "Average",
+            good: "Good",
+            excellent: "Excellent",
+            yes: "Yes",
+            no: "No",
+            not_helpful: "Not Helpful",
+            somewhat_helpful: "Somewhat Helpful",
+            very_helpful: "Very Helpful",
+            your_suggestions: "Your suggestions here..."
+        },
+        help: {
+            help_center_title: "Help Center",
+            user_guide_title: "User Guide",
+            faq_title: "Frequently Asked Questions",
+            contact_support_title: "Contact Support",
+            guide_search: "Use the search bar at the top to find any room or facility",
+            guide_directory: "Browse the Campus Directory to explore all buildings",
+            guide_language: "Toggle between English and Tagalog using the language button",
+            guide_voice: "Click the microphone icon for voice search",
+            faq_q1: "Q: How do I search for a specific room?",
+            faq_a1: "A: Use the search bar or voice search feature at the top of the screen.",
+            faq_q2: "Q: Can I change the language?",
+            faq_a2: "A: Yes! Click the globe icon at the top right to switch between English and Tagalog.",
+            faq_q3: "Q: How do I get directions to a room?",
+            faq_a3: "A: Search for the room, then tap 'Tap for Directions' to view the route.",
+            need_help: "Need more help? Contact the school office",
+            phone: "Phone",
+            email: "Email",
+            use_directory: "Use the \"Campus Directory\" or ask the Assistant to \"Navigate Rooms\".",
+            export_data: "Admin: Export Data",
+            upload_data: "Admin: Upload Data"
         }
     },
     tl: {
@@ -137,6 +209,73 @@ const translations = {
             we_could_not_find: "Hindi namin mahanap ang",
             search_tips: "Ang hinahanap mo ay wala sa aming database. Pakisuri ang spelling o subukang hanapin ang mga pasilidad tulad ng 'Library', 'Clinic', o 'Canteen'.",
             loading: "Naglo-load..."
+        },
+        homepage: {
+            upcoming_events_title: "Mga Paparating na Kaganapan",
+            announcements_title: "Mga Anunsyo",
+            campus_directory_title: "Direktoryo ng Kampus",
+            select_building_desc: "Pumili ng gusali upang tingnan ang mga lokasyon"
+        },
+        events: {
+            fourth_quarter_exams: "Ikaapat na Quarter na Pagsusulit",
+            eosy_rites: "Seremonya ng Pagtatapos ng Taon",
+            parent_teacher_conf: "Pulong ng Magulang at Guro",
+            after_quarter_exams: "Pagkatapos ng Quarterly Exam"
+        },
+        announcements: {
+            exams_scheduled: "Ikaapat na Quarter na Pagsusulit ay nakatakda sa Marso 19 at 20, 2026",
+            eosy_march: "Seremonya ng Pagtatapos ng Taon sa Marso 30-31, 2026",
+            ptc_after_exams: "Pulong ng Magulang at Guro pagkatapos ng quarterly exams",
+            submit_clearance: "Ipasa ang lahat ng clearance requirements bago ang EOSY Rites",
+            report_cards: "Ang mga report card ay ibibigay pagkatapos ng quarter exams",
+            school_year_ends: "Ang Taong Paaralan 2025-2026 ay magtatapos sa Marso 31, 2026"
+        },
+        team: {
+            our_research_team: "Ang Aming Koponan sa Pananaliksik",
+            meet_team: "Kilalanin ang mga taong nagtrabaho sa proyektong ito",
+            research_leader: "Pinuno ng Pananaliksik",
+            co_researcher: "Kasamang Mananaliksik"
+        },
+        survey: {
+            title: "Sarbey ng Feedback ng Gumagamit",
+            question1: "Paano mo irerate ang iyong kabuuang karanasan sa kiosk?",
+            question2: "Ang impormasyon na hinahanap mo ba ay madaling mahanap?",
+            question3: "Gaano ka-helpful ang navigation system?",
+            question4: "Irerekumenda mo ba ang kiosk na ito sa iba?",
+            question5: "Pakibahagi ang anumang mungkahi para sa pagpapabuti:",
+            very_poor: "Napakasama",
+            poor: "Masama",
+            average: "Katamtaman",
+            good: "Mabuti",
+            excellent: "Napakahusay",
+            yes: "Oo",
+            no: "Hindi",
+            not_helpful: "Hindi Nakatulong",
+            somewhat_helpful: "Medyo Nakatulong",
+            very_helpful: "Napakatulong",
+            your_suggestions: "Ang iyong mga mungkahi dito..."
+        },
+        help: {
+            help_center_title: "Sentro ng Tulong",
+            user_guide_title: "Gabay sa Paggamit",
+            faq_title: "Mga Madalas Itanong",
+            contact_support_title: "Makipag-ugnayan sa Support",
+            guide_search: "Gamitin ang search bar sa itaas upang maghanap ng silid o pasilidad",
+            guide_directory: "I-browse ang Campus Directory upang tuklasin ang lahat ng gusali",
+            guide_language: "Magpalit sa pagitan ng English at Tagalog gamit ang language button",
+            guide_voice: "I-click ang microphone icon para sa voice search",
+            faq_q1: "T: Paano ako maghanap ng specific na silid?",
+            faq_a1: "S: Gamitin ang search bar o voice search feature sa itaas ng screen.",
+            faq_q2: "T: Maaari ko bang palitan ang wika?",
+            faq_a2: "S: Oo! I-click ang globe icon sa kanang itaas upang magpalit sa pagitan ng English at Tagalog.",
+            faq_q3: "T: Paano ako makakakuha ng directions papunta sa silid?",
+            faq_a3: "S: Maghanap ng silid, pagkatapos pindutin ang 'Pindutin para sa Direksyon' upang tingnan ang ruta.",
+            need_help: "Kailangan ng tulong? Makipag-ugnayan sa school office",
+            phone: "Telepono",
+            email: "Email",
+            use_directory: "Gamitin ang \"Direktoryo ng Kampus\" o tanungin ang Assistant na \"Maghanap ng Silid\".",
+            export_data: "Admin: I-export ang Data",
+            upload_data: "Admin: Mag-upload ng Data"
         }
     }
 };
@@ -181,22 +320,20 @@ const sentenceMap = {
     "Turn right.": "Kumanan.",
     "Turn to your left.": "Kumaliwa.",
     "Turn to your right.": "Kumanan.",
+    "Turn to your left, and you have arrived at the backstage door.": "Kumaliwa, at nasa backstage door ka na.",
 
     // Arrival / Destination
     "You have arrived at": "Nakarating ka na sa",
     "The first door you will see on the left is Room 101.": "Ang unang pinto sa kaliwa ay Room 101.",
     "Walk until you reach the Stockroom or \"Room 101\".": "Maglakad hanggang marating ang Stockroom o Room 101.",
+    "Continue walking until you have reached the Standard Classroom or \"Room 102.\"": "Maglakad pa hanggang marating ang Room 102.",
+    "Continue walking until you have reached the Standard Classroom or \"Room 103.\"": "Maglakad pa hanggang marating ang Room 103.",
+    "Continue walking until you have reached the end then turn left.": "Maglakad hanggang dulo at kumaliwa.",
+    "Continue walking until you have reached the main Staircase.": "Maglakad hanggang marating ang pangunahing hagdan.",
+    "Continue going up until you have reached the second floor.": "Umakyat hanggang makarating sa ikalawang palapag.",
+    "Turn to your right and walk until the end. You have reached the Classroom or \"Room 201.\"": "Kumanan at maglakad hanggang dulo. Nasa Room 201 ka na.",
     "Walk past all rooms on Floor 1 and continue straight to the stairs.": "Lagpasan ang mga silid sa 1st Floor at dumiretso sa hagdan.",
-
-    // Generic patterns for regex replacement if strict match fails
-    patterns: [
-        { regex: /Start at the (.*)/i, replace: "Magsimula sa $1" },
-        { regex: /Walk straight (.*)/i, replace: "Maglakad nang diretso $1" },
-        { regex: /Turn right (.*)/i, replace: "Kumanan $1" },
-        { regex: /Turn left (.*)/i, replace: "Kumaliwa $1" },
-        { regex: /You have reached (.*)/i, replace: "Nakarating ka na sa $1" },
-        { regex: /Walk until you reach (.*)/i, replace: "Maglakad hanggang marating ang $1" }
-    ]
+    "Turn to your right and walk until the end. You have reached the Classroom or \"Room 202.\"": "Kumanan at maglakad hanggang dulo. Nasa Room 202 ka na."
 };
 
 // Auto-translate direction text with natural grammar
@@ -209,13 +346,7 @@ function translateDirection(text) {
         return sentenceMap[text];
     }
 
-    // 2. Check Loop for specific known sentences not in direct map keys but in logic
-    // (This part mimics the previous logic but with better data if we populated sentenceMap fully)
-
-    // 3. Pattern Matching (Fallback)
-    // Simple replacements usually sound robotic, so we try to keep English terms that are commonly used (like "Building A", "Kiosk")
-    // but change the verbs and prepositions.
-
+    // 2. Fallback: Word replacements for unknown sentences
     let translated = text;
 
     // Common Phrase Replacements (Context-aware)
@@ -242,13 +373,15 @@ function translateDirection(text) {
         { en: "on the left", tl: "sa kaliwa" },
         { en: "on the right", tl: "sa kanan" },
         { en: "You have arrived at", tl: "Nakarating ka na sa" },
-        { en: "Room", tl: "Room" }, // Keep "Room" as it's commonly used, or "Silid" if strict
+        { en: "and you have arrived at", tl: "at nasa" },
+        { en: "Room", tl: "Room" }, // Keep "Room"
         { en: "Building", tl: "Building" } // Keep "Building"
     ];
 
     for (const phrase of phrases) {
         // Use a case-insensitive replacement
-        const regex = new RegExp(phrase.en, "gi");
+        // We use a regex safely by escaping special chars if needed, simplified here
+        const regex = new RegExp(phrase.en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), "gi");
         translated = translated.replace(regex, phrase.tl);
     }
 
@@ -258,7 +391,11 @@ function translateDirection(text) {
 // Toggle language function
 function toggleLanguage() {
     currentLang = currentLang === 'en' ? 'tl' : 'en';
-    localStorage.setItem('kioskLanguage', currentLang);
+    try {
+        localStorage.setItem('kioskLanguage', currentLang);
+    } catch (e) {
+        console.warn('LocalStorage write failed.');
+    }
     updateUILanguage();
     // Refresh the view if dynamic content is showing (like building view) to re-render with new language
     // Since we can't easily re-call the exact function without params, clean reload might be best or specific checks

@@ -188,7 +188,7 @@
                     label: 'Room 101',
                     desc: 'Standard Classroom',
                     img: 'Building B 1F 101.jpg',
-                    directions: 'Building B - 1st Floor TLE Faculty (Room 112) Directions.jpg', // Fallback/Placeholder
+                    directions: 'placeholderimg.jpg', // No specific found
                     textDirections: [
                         "Start at the Main Kiosk near the gate.",
                         "Walk to your right, then turn left after reaching the end.",
@@ -321,8 +321,8 @@
                 {
                     label: 'Restrooms',
                     desc: 'Restroom (First Floor)',
-                    img: 'Building B 1F Restrooms.jpg', // Assuming generic image or previous one if specific name exists
-                    directions: 'Building B - 1st Floor Restroom Directions.jpg', // Presumed generic direction image
+                    img: 'Building B 1F Restrooms.jpg',
+                    directions: 'placeholderimg.jpg', // No specific found
                     textDirections: [
                         "Start at the Main Kiosk near the gate.",
                         "Walk to your left, then turn right.",
@@ -421,31 +421,28 @@
         },
         floorData: {
             1: [
-                { label: 'ROOM 101 – COOKERY LAB 9', desc: 'Cookery Laboratory', img: 'Building C 1F 101.jpg', directions: 'Building C - 1st Floor Cookery Lab (Room 101) Directions.jpg' },
-                { label: 'ROOM 105 – TVL', desc: 'TVL Room', img: 'Building C 1F 105 TVL - FBS Room.jpg', directions: 'Building C - 1st Floor TVL-FBS Room Directions.jpg' },
-                { label: 'ROOM 106 – COOKERY LAB', desc: 'Cookery Laboratory', img: 'Building C 1F 106 Cookery Laboratory.jpg', directions: 'Building C - 1st Floor Cookery Laboratory Directions.jpg' },
-                { label: 'JHS GUIDANCE OFFICE', desc: 'JHS Guidance Office', img: 'Building C 1F JHS Guidance Office.jpg', directions: 'Building C - 1st Floor JHS Guidance Office Directions.jpg' },
-                { label: 'SHS GUIDANCE OFFICE', desc: 'SHS Guidance Office', img: 'Building C 1F SHS Guidance Office.jpg', directions: 'Building C - 1st Floor SHS Guidance Office Directions.jpg' },
-                { label: 'RESTROOMS', desc: 'Comfort Rooms', img: 'Building C 1F Restrooms.jpg', directions: 'Building C - 1st Floor Restroom Directions.jpg' },
-                { label: 'GARDEN AREA 1', desc: 'Outdoor Garden', img: 'Bldg. A,B,C Garden.jpg', directions: 'Building C - 1st Floor Teen Center Directions.jpg' },
-                { label: 'GARDEN AREA 2', desc: 'Outdoor Garden', img: 'Bldg. A,B,C Garden 2.jpg', directions: 'Building C - 1st Floor Teen Center Directions.jpg' },
-                { label: 'READING PARK', desc: 'School Reading Park', img: 'Bldg. C, D School Reading Park.jpg', directions: 'Building C - 1st Floor Teen Center Directions.jpg' }
+                { label: 'Room 101', desc: 'Cookery Laboratory 9', img: 'Building C 1F 101.jpg', directions: 'Building C - 1st Floor Cookery Lab (Room 101) Directions.jpg' },
+                { label: 'Room 105', desc: 'TVL - FBS Room', img: 'Building C 1F 105 TVL - FBS Room.jpg', directions: 'Building C - 1st Floor TVL-FBS Room Directions.jpg' },
+                { label: 'Room 106', desc: 'Cookery Laboratory', img: 'Building C 1F 106 Cookery Laboratory.jpg', directions: 'Building C - 1st Floor Cookery Laboratory Directions.jpg' },
+                { label: 'JHS Guidance Office', desc: 'JHS Guidance Office', img: 'Building C 1F JHS Guidance Office.jpg', directions: 'Building C - 1st Floor JHS Guidance Office Directions.jpg' },
+                { label: 'SHS Guidance Office', desc: 'SHS Guidance Office', img: 'Building C 1F SHS Guidance Office.jpg', directions: 'Building C - 1st Floor SHS Guidance Office Directions.jpg' },
+                { label: 'Restrooms', desc: 'Comfort Rooms', img: 'Building C 1F Restrooms.jpg', directions: 'Building C - 1st Floor Restroom Directions.jpg' },
+                { label: 'Garden Area 1', desc: 'Outdoor Garden', img: 'Bldg. A,B,C Garden.jpg', directions: 'Building C - 1st Floor Teen Center Directions.jpg' },
+                { label: 'Garden Area 2', desc: 'Outdoor Garden', img: 'Bldg. A,B,C Garden 2.jpg', directions: 'Building C - 1st Floor Teen Center Directions.jpg' },
+                { label: 'Reading Park', desc: 'School Reading Park', img: 'Bldg. C, D School Reading Park.jpg', directions: 'Building C - 1st Floor Teen Center Directions.jpg' }
             ],
             2: [
-                { label: 'ROOM 201 – COMLAB (SHS)', desc: 'SHS Computer Lab', img: 'Building C 2F 201 SHS Computer Lab.jpg', directions: 'Building C - 2nd Floor Computer Laboratory (Room 201 - 202) Directions.jpg' },
-                { label: 'ROOM 202 – COMLAB (SHS)', desc: 'SHS Computer Lab', img: 'Building C 2F 202 SHS Computer Lab.jpg', directions: 'Building C - 2nd Floor Computer Laboratory (Room 201 - 202) Directions.jpg' },
-                { label: 'ROOM 204 – E-LIBRARY', desc: 'E-Library', img: 'Building C 2F 204 E - Library.jpg', directions: 'Building C - 2nd Floor E - Library (Room 204) Directions.jpg' },
-                { label: 'ROOM 205', desc: 'Standard Classroom', img: 'Building C 2F 205.jpg', directions: 'Building C - 2nd Floor Room 205 Directions.jpg' },
-                { label: 'ROOM 206', desc: 'Standard Classroom', img: 'Building C 2F 206.jpg', directions: 'Building C - 2nd Floor Room 206 Directions.jpg' },
-                { label: 'FINANCE OFFICE', desc: 'School Finance', img: 'Building C 2F Finance Office.jpg', directions: 'Building C - 2nd Floor Finance Room (Room 207) Directions.jpg' },
-                { label: 'RESTROOMS', desc: 'Comfort Rooms', img: 'Building C 2F Restrooms.jpg', directions: 'Building C - 2nd Floor Restroom Directions.jpg' }
+                { label: 'Room 201', desc: 'SHS Computer Lab', img: 'Building C 2F 201 SHS Computer Lab.jpg', directions: 'Building C - 2nd Floor Computer Laboratory (Room 201 - 202) Directions.jpg' },
+                { label: 'Room 202', desc: 'SHS Computer Lab', img: 'Building C 2F 202 SHS Computer Lab.jpg', directions: 'Building C - 2nd Floor Computer Laboratory (Room 201 - 202) Directions.jpg' },
+                { label: 'Room 204', desc: 'E-Library', img: 'Building C 2F 204 E - Library.jpg', directions: 'Building C - 2nd Floor E - Library (Room 204) Directions.jpg' },
+                { label: 'Room 205', desc: 'Standard Classroom', img: 'Building C 2F 205.jpg', directions: 'Building C - 2nd Floor Room 205 Directions.jpg' },
+                { label: 'Room 206', desc: 'Standard Classroom', img: 'Building C 2F 206.jpg', directions: 'Building C - 2nd Floor Room 206 Directions.jpg' },
+                { label: 'Finance Office', desc: 'School Finance', img: 'Building C 2F Finance Office.jpg', directions: 'Building C - 2nd Floor Finance Room (Room 207) Directions.jpg' },
+                { label: 'Restrooms', desc: 'Comfort Rooms', img: 'Building C 2F Restrooms.jpg', directions: 'Building C - 2nd Floor Restroom Directions.jpg' }
             ]
         },
         rooms: {
-            // Fallbacks or other floors can still use the generic mapping if needed, 
-            // but floorData takes precedence for the specific floor.
             '101': 'Building C 1F 101.jpg',
-            '102': 'Building C 1F 102.jpg', // Placeholder if not strictly existent
             '105': 'Building C 1F 105 TVL - FBS Room.jpg',
             '106': 'Building C 1F 106 Cookery Laboratory.jpg',
             '201': 'Building C 2F 201 SHS Computer Lab.jpg',
@@ -492,7 +489,7 @@
                     label: 'Girls\' Restroom',
                     desc: 'Restroom (Floor 1)',
                     img: 'Building D 1F Restrooms.jpg',
-                    directions: 'Building D - 1st Floor Restroom Directions.jpg',
+                    directions: 'placeholderimg.jpg',
                     textDirections: [
                         "Start at the main kiosk near the gate.",
                         "Walk straight ahead toward the quadrangle.",
@@ -506,7 +503,7 @@
                     label: 'Reading Park',
                     desc: 'School Reading Park',
                     img: 'Bldg. C, D School Reading Park.jpg',
-                    directions: 'Building D - 1st Floor Restroom Directions.jpg', // Placeholder directions
+                    directions: 'placeholderimg.jpg', // Placeholder directions
                     textDirections: [
                         "Start at the main kiosk near the gate.",
                         "Walk straight ahead toward the quadrangle.",
@@ -549,7 +546,7 @@
                     label: 'Boys\' Restroom',
                     desc: 'Restroom (Floor 2)',
                     img: 'Building D 2F Restrooms.jpg',
-                    directions: 'Building D - 2nd Floor Restroom Directions.jpg',
+                    directions: 'placeholderimg.jpg',
                     textDirections: [
                         "Start at the main kiosk near the gate.",
                         "Walk straight ahead toward the quadrangle.",

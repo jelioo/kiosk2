@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>School Smart Kiosk</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assistant.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -66,20 +65,30 @@
                 </div>
                 <div class="card-grid" id="card-grid">
                     <div class="card" id="events-card">
-                        <h3><i class="fas fa-calendar-day"></i> Upcoming Events</h3>
+                        <h3><i class="fas fa-calendar-day"></i> <span
+                                data-translate="homepage.upcoming_events_title">Upcoming Events</span></h3>
                         <ul class="event-list">
-                            <li><span>Science Fair</span> <span class="event-date">Feb 20, 9:00 AM</span></li>
-                            <li><span>Basketball Tournament</span> <span class="event-date">Feb 25, 3:00 PM</span></li>
-                            <li><span>Parent-Teacher Conference</span> <span class="event-date">Feb 28, 1:00 PM</span>
+                            <li><span data-translate="events.fourth_quarter_exams">Fourth Quarter Exams</span> <span
+                                    class="event-date">March 19-20, 2026</span></li>
+                            <li><span data-translate="events.eosy_rites">End-of-School-Year Rites</span> <span
+                                    class="event-date">March 30-31, 2026</span>
+                            </li>
+                            <li><span data-translate="events.parent_teacher_conf">Parent-Teacher Conference</span> <span
+                                    class="event-date" data-translate="events.after_quarter_exams">After Quarter
+                                    Exams</span>
                             </li>
                         </ul>
                     </div>
                     <div class="card" id="announcements-card">
-                        <h3><i class="fas fa-clipboard-list"></i> Announcements</h3>
+                        <h3><i class="fas fa-clipboard-list"></i> <span
+                                data-translate="homepage.announcements_title">Announcements</span></h3>
                         <ul class="event-list">
-                            <li>Yearbook photos will be taken next week</li>
-                            <li>Library will close early on Friday</li>
-                            <li>New cafeteria menu now available</li>
+                            <li data-translate="announcements.exams_scheduled">Fourth Quarter Exams scheduled for March
+                                19 and 20, 2026</li>
+                            <li data-translate="announcements.eosy_march">End-of-School-Year Rites on March 30-31, 2026
+                            </li>
+                            <li data-translate="announcements.submit_clearance">Submit all clearance requirements before
+                                EOSY Rites</li>
                         </ul>
                     </div>
                     <div class="card" id="directory-card">

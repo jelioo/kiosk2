@@ -13,7 +13,8 @@ function updateDateTime() {
         second: '2-digit'
     };
     const philippineTime = new Intl.DateTimeFormat('en-US', options).format(now);
-    document.getElementById('date-time-display').textContent = 'Current Philippine Time: ' + philippineTime;
+    const display = document.getElementById('date-time-display');
+    if (display) display.textContent = 'Current Philippine Time: ' + philippineTime;
 }
 
 updateDateTime();
@@ -78,5 +79,86 @@ function setActiveNav(element) {
     // Add active class to clicked element
     if (element) {
         element.classList.add('active');
+    }
+}
+
+// Improved Search Function
+function performSearch() {
+    const input = document.getElementById('search-input');
+    if (!input) return;
+
+    const query = input.value.trim().toLowerCase();
+
+    // 1. Prevent empty searches
+    if (!query) {
+        input.focus();
+        return;
+    }
+
+    // 2. Define keywords for manual mappings (e.g. facilities not in room list)
+    const keywords = {
+        'canteen': { building: 'Building B', floor: 1, label: 'School Canteen', img: 'Building B 1F School Canteen.jpg', desc: 'Main School Canteen' },
+        'library': { building: 'Building C', floor: 2, label: 'E - Library', img: 'Building C 2F 204 E - Library.jpg', desc: 'Electronic Library' },
+        'clinic': { building: 'Building B', floor: 1, label: 'Medical Clinic', img: 'Building B 1F Clinic.jpg', desc: 'Medical and Dental Clinic' },
+        'principal': { building: 'Building B', floor: 1, label: "Office of the Principal", img: 'Building B 1F Office of the Principal.jpg', desc: "Principal's Office" },
+        'gym': { building: 'Building D', floor: 1, label: 'Gymnasium', img: 'placeholderimg.jpg', desc: 'School Gym / Court' },
+        'stage': { building: 'Building A', floor: 1, label: 'School Stage', img: 'Building A 1F Backstage.jpg', desc: 'Main Stage Area' },
+        'registrar': { building: 'Building B', floor: 1, label: 'Office of the Registrar', img: 'Building B 1F Office of the Registrar.jpg', desc: 'Registrar Office' },
+        'guidance': { building: 'Building C', floor: 1, label: 'JHS Guidance Office', img: 'Building C 1F JHS Guidance Office.jpg', desc: 'Guidance Office' },
+        'computer lab': { building: 'Building C', floor: 2, label: 'SHS Computer Lab', img: 'Building C 2F 201 SHS Computer Lab.jpg', desc: 'Computer Laboratory' },
+        'cookery': { building: 'Building C', floor: 1, label: 'Cookery Laboratory', img: 'Building C 1F 106 Cookery Laboratory.jpg', desc: 'Cookery Lab' }
+    };
+
+    // 3. Check Manual Keywords First
+    for (const key in keywords) {
+        if (query.includes(key)) {
+            const match = keywords[key];
+            if (typeof viewSpecificRoom === 'function') {
+                viewSpecificRoom(match.building, match.label, match);
+            }
+            return; // Stop searching, we found a match
+        }
+    }
+
+    // 4. Search in Building Data
+    let found = false;
+
+    // Check if buildingImages is loaded
+    if (typeof buildingImages !== 'undefined') {
+        // Iterate through all buildings
+        for (const buildingName in buildingImages) {
+            const bData = buildingImages[buildingName];
+            if (bData.floorData) {
+                for (const floor in bData.floorData) {
+                    const rooms = bData.floorData[floor];
+                    // Check each room
+                    for (const room of rooms) {
+                        // Check if query matches Room Label or Description
+                        if (room.label.toLowerCase().includes(query) ||
+                            room.desc.toLowerCase().includes(query) ||
+                            buildingName.toLowerCase().includes(query)) {
+                            // Pass floor explicitly to context
+                            room.floor = floor;
+                            if (typeof viewSpecificRoom === 'function') {
+                                viewSpecificRoom(buildingName, room.label, room);
+                            }
+                            found = true;
+                            break; // Stop at first relevant match
+                        }
+                    }
+                    if (found) break;
+                }
+            }
+            if (found) break;
+        }
+    }
+
+    // 5. "No Results" Fallback
+    if (!found) {
+        if (typeof showNoResults === 'function') {
+            showNoResults(query);
+        } else {
+            alert('No results found for: ' + query);
+        }
     }
 }
