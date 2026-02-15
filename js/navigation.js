@@ -621,16 +621,46 @@ function openChatbot() {
         </div>
         
         <div class="card" style="grid-column: 1 / -1; min-height: 600px; padding: 0; overflow: hidden; display: flex; flex-direction: column;">
-            <div class="chatbot-container" style="width: 100%; height: 600px; position: relative;">
+            <div style="padding: 10px; background: #f0f2f5; border-bottom: 2px solid #ddd; display: flex; justify-content: center;">
+                <button onclick="toggleChatbotKeyboard()" style="background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-keyboard"></i> Show Keyboard
+                </button>
+            </div>
+            <div class="chatbot-container" style="width: 100%; height: 550px; position: relative;">
                 <iframe
                     src="https://www.chatbase.co/ONi3F76UOQ5dRrwX6NybY/help"
                     title="Jelioo Kiosk Chatbot"
-                    style="width: 100%; height: 100%; border: none; border-radius: 10px;"
+                    style="width: 100%; height: 100%; border: none;"
                     frameborder="0">
                 </iframe>
             </div>
         </div>
     `;
+}
+
+// Toggle keyboard for chatbot
+function toggleChatbotKeyboard() {
+    const keyboard = document.getElementById('virtual-keyboard');
+    if (keyboard) {
+        if (keyboard.style.display === 'block') {
+            keyboard.style.display = 'none';
+        } else {
+            keyboard.style.display = 'block';
+            // Create a hidden input to receive keyboard input
+            let hiddenInput = document.getElementById('chatbot-hidden-input');
+            if (!hiddenInput) {
+                hiddenInput = document.createElement('input');
+                hiddenInput.id = 'chatbot-hidden-input';
+                hiddenInput.type = 'text';
+                hiddenInput.style.position = 'absolute';
+                hiddenInput.style.opacity = '0';
+                hiddenInput.style.pointerEvents = 'none';
+                document.body.appendChild(hiddenInput);
+            }
+            currentInput = hiddenInput;
+            hiddenInput.focus();
+        }
+    }
 }
 
 function checkSearchEnter(event) {
