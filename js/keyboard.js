@@ -2,7 +2,7 @@ let currentInput = null;
 let isCapsLock = false;
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Attach focus events
+    // Attach focus events — tracks which input the keyboard should type into
     document.body.addEventListener('focusin', function (e) {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
             const type = e.target.getAttribute('type');
@@ -13,18 +13,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     });
-
-    // Close keyboard when clicking outside (optional, maybe distracting if unintentional)
-    /*
-    document.addEventListener('click', function(e) {
-        const keyboard = document.getElementById('virtual-keyboard');
-        if (keyboard && keyboard.style.display === 'block') {
-             if (!keyboard.contains(e.target) && e.target !== currentInput) {
-                 closeKeyboard();
-             }
-        }
-    });
-    */
 });
 
 function closeKeyboard() {
@@ -40,7 +28,7 @@ function toggleCapsLock() {
         else capsBtn.classList.remove('active');
     }
 
-    // Update keys
+    // Update displayed key labels
     const keys = document.querySelectorAll('.key');
     keys.forEach(key => {
         if (!key.classList.contains('special') && !key.classList.contains('space') && !key.classList.contains('close-keyboard')) {
@@ -53,17 +41,49 @@ function toggleCapsLock() {
 }
 
 function typeKey(key) {
+    // Robust recovery: if currentInput is null or has been removed from the DOM, recover it
+    if (!currentInput || !document.body.contains(currentInput)) {
+        // 1. Try the currently focused element
+        const ae = document.activeElement;
+        if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA') &&
+            ae.getAttribute('type') !== 'button' && ae.getAttribute('type') !== 'submit') {
+            currentInput = ae;
+        } else {
+            // 2. Fall back to known inputs in priority order
+            currentInput =
+                document.getElementById('chatbot-input') ||
+                document.getElementById('chatbot-apikey-input') ||
+                document.getElementById('search-input');
+        }
+    }
+
     if (!currentInput) return;
 
     if (key === 'BACKSPACE') {
-        currentInput.value = currentInput.value.slice(0, -1);
+        const val = currentInput.value;
+        const start = currentInput.selectionStart;
+        const end = currentInput.selectionEnd;
+        if (start !== undefined && start !== end) {
+            // Delete selected text
+            currentInput.value = val.slice(0, start) + val.slice(end);
+            currentInput.selectionStart = currentInput.selectionEnd = start;
+        } else {
+            currentInput.value = val.slice(0, -1);
+        }
     } else if (key === 'SPACE') {
         currentInput.value += ' ';
     } else if (key === 'ENTER') {
-        if (currentInput.id === 'search-input' && typeof performSearch === 'function') {
+        if (currentInput.id === 'chatbot-input' && typeof sendChatbotMessage === 'function') {
+            sendChatbotMessage();
+            // Keep keyboard open — user may want to send more messages
+        } else if (currentInput.id === 'chatbot-apikey-input' && typeof applyApiKey === 'function') {
+            applyApiKey();
+        } else if (currentInput.id === 'search-input' && typeof performSearch === 'function') {
             performSearch();
+            closeKeyboard();
+        } else {
+            closeKeyboard();
         }
-        closeKeyboard();
     } else {
         let char = key;
         if (char.length === 1 && /[a-zA-Z]/.test(char)) {
@@ -72,6 +92,6 @@ function typeKey(key) {
         currentInput.value += char;
     }
 
-    // Trigger input event
+    // Fire an input event so live search / chat updates
     currentInput.dispatchEvent(new Event('input', { bubbles: true }));
 }

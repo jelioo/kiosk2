@@ -120,30 +120,84 @@ function performSearch() {
         }
     }
 
-    // 4. Search in Building Data
+    // 4. Detect if the query is ONLY a room number (no building name specified).
+    //    Patterns recognized: "101", "room 101", "room101", "rm 101"
+    //    We check that no building name (A/B/C/D) is part of the query.
+    const buildingKeywords = [
+        'building a', 'building b', 'building c', 'building d',
+        'bldg a', 'bldg b', 'bldg c', 'bldg d',
+        'bldg. a', 'bldg. b', 'bldg. c', 'bldg. d'
+    ];
+    const buildingMentioned = buildingKeywords.some(b => query.includes(b));
+
+    // Extract a 3-digit room number from the query
+    const roomNumberMatch = query.match(/(?:room\s*|rm\s*)?(\d{3})/);
+
+    if (roomNumberMatch && !buildingMentioned) {
+        // Room-number-only search: collect ALL matching rooms across every building
+        const roomNumber = roomNumberMatch[1]; // e.g. "101"
+        const allMatches = [];
+
+        if (typeof buildingImages !== 'undefined') {
+            for (const buildingName in buildingImages) {
+                const bData = buildingImages[buildingName];
+                if (bData.floorData) {
+                    for (const floor in bData.floorData) {
+                        const rooms = bData.floorData[floor];
+                        for (const room of rooms) {
+                            // Match rooms whose label contains the exact room number
+                            // e.g. "Room 101" contains "101"
+                            if (room.label.toLowerCase().includes(roomNumber)) {
+                                allMatches.push({
+                                    building: buildingName,
+                                    floor: floor,
+                                    room: room
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (allMatches.length > 1) {
+            // Multiple buildings have this room — show a directory grid
+            if (typeof showMultipleRoomResults === 'function') {
+                showMultipleRoomResults(roomNumber, allMatches);
+            }
+            return;
+        } else if (allMatches.length === 1) {
+            // Exactly one result — go straight to the single room view
+            const m = allMatches[0];
+            m.room.floor = m.floor;
+            if (typeof viewSpecificRoom === 'function') {
+                viewSpecificRoom(m.building, m.room.label, m.room);
+            }
+            return;
+        }
+        // Zero matches — fall through to no-results
+    }
+
+    // 5. Standard full-text search across building data (used when building is specified
+    //    or when the query is not a plain room number)
     let found = false;
 
-    // Check if buildingImages is loaded
     if (typeof buildingImages !== 'undefined') {
-        // Iterate through all buildings
         for (const buildingName in buildingImages) {
             const bData = buildingImages[buildingName];
             if (bData.floorData) {
                 for (const floor in bData.floorData) {
                     const rooms = bData.floorData[floor];
-                    // Check each room
                     for (const room of rooms) {
-                        // Check if query matches Room Label or Description
                         if (room.label.toLowerCase().includes(query) ||
                             room.desc.toLowerCase().includes(query) ||
                             buildingName.toLowerCase().includes(query)) {
-                            // Pass floor explicitly to context
                             room.floor = floor;
                             if (typeof viewSpecificRoom === 'function') {
                                 viewSpecificRoom(buildingName, room.label, room);
                             }
                             found = true;
-                            break; // Stop at first relevant match
+                            break;
                         }
                     }
                     if (found) break;
@@ -153,7 +207,7 @@ function performSearch() {
         }
     }
 
-    // 5. "No Results" Fallback
+    // 6. "No Results" Fallback
     if (!found) {
         if (typeof showNoResults === 'function') {
             showNoResults(query);

@@ -611,55 +611,773 @@ function viewNews() {
     if (modal) modal.style.display = 'none';
 }
 
+// Chatbot message history for display
+let chatHistory = [];
+
+// Helper to find room locations across all buildings
+function findRoomLocations(roomNumber) {
+    const results = [];
+    if (typeof buildingImages === 'undefined') return results;
+
+    for (const [bldgName, bldgData] of Object.entries(buildingImages)) {
+        if (!bldgData.floorData) continue;
+        for (const [floor, rooms] of Object.entries(bldgData.floorData)) {
+            for (const room of rooms) {
+                // Check if label contains the room number (e.g., "Room 101", "101")
+                // strict check usually better: includes " " + number or ends with number
+                if (room.label.includes(roomNumber) || room.label.endsWith(' ' + roomNumber)) {
+                    results.push({
+                        building: bldgName,
+                        floor: floor,
+                        room: room
+                    });
+                }
+            }
+        }
+    }
+    return results;
+}
+
+// Function to view a specific room directly
+// Function to view a specific room directly
+function viewSpecificRoom(buildingName, roomName, roomData, floor) {
+    // 1. Open the directory
+    showCampusDirectory();
+
+    // 2. Select the building after a short delay to allow transition
+    setTimeout(() => {
+        if (floor) {
+            viewFloor(buildingName, floor);
+        } else {
+            viewBuilding(buildingName);
+        }
+    }, 300);
+}
+
 function openChatbot() {
     document.getElementById('assistant-modal').style.display = 'none';
+    chatHistory = [];
     const cardGrid = document.getElementById('card-grid');
+
+    // Quick Prompts Data
+    const quickPrompts = [
+        { label: "📍 Where is the Clinic?", query: "Where is the clinic?" },
+        { label: "📅 School Events", query: "Show me school events" },
+        { label: "⏰ Bell Schedule", query: "What is the school schedule?" },
+        { label: "👮 Principal's Office", query: "Where is the principal?" },
+        { label: "📞 Contact Numbers", query: "School contact numbers" },
+        { label: "🚻 Comfort Rooms", query: "Where are the comfort rooms?" }
+    ];
+
+    const promptsHtml = quickPrompts.map(p => `
+        <button onclick="sendQuickPrompt('${p.query}')" style="
+            background: #fff; border: 1px solid #e0e0e0; border-radius: 20px;
+            padding: 8px 14px; font-size: 0.9rem; color: #555; cursor: pointer;
+            transition: all 0.2s; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        " onmouseover="this.style.background='#f0f4f8'; this.style.color='#2c3e50'; this.style.transform='translateY(-2px)'"
+          onmouseout="this.style.background='#fff'; this.style.color='#555'; this.style.transform='translateY(0)'">
+            ${p.label}
+        </button>
+    `).join('');
+
     cardGrid.innerHTML = `
-        <div class="card about-title-card">
-            <h3><i class="fas fa-robot"></i> AI Assistant</h3>
-            <p>Ask me anything about the school!</p>
+        <div class="card" style="grid-column: 1 / -1; background: linear-gradient(135deg, #2c3e50, #4ca1af); color: white; padding: 20px; border-radius: 12px; display: flex; align-items: center; gap: 15px;">
+            <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 50%;">
+                <i class="fas fa-robot" style="font-size: 2rem;"></i>
+            </div>
+            <div>
+                <h2 style="margin: 0; font-size: 1.5rem;">AI School Assistant</h2>
+                <p style="margin: 5px 0 0; opacity: 0.9;">Ask me anything about rooms, schedules, or events!</p>
+            </div>
         </div>
-        
-        <div class="card" style="grid-column: 1 / -1; min-height: 600px; padding: 0; overflow: hidden; display: flex; flex-direction: column;">
-            <div style="padding: 10px; background: #f0f2f5; border-bottom: 2px solid #ddd; display: flex; justify-content: center;">
-                <button onclick="toggleChatbotKeyboard()" style="background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
-                    <i class="fas fa-keyboard"></i> Show Keyboard
+
+        <div class="card" id="chatbot-card" style="grid-column: 1 / -1; padding: 0; overflow: hidden; display: flex; flex-direction: column; height: 60vh; max-height: 700px; min-height: 500px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+
+            <!-- Chat message history -->
+            <div id="chatbot-messages" style="
+                flex: 1;
+                padding: 20px;
+                overflow-y: auto;
+                background: #f4f6f9;
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            ">
+                <div style="text-align:center; margin: 20px 0;">
+                    <div style="width: 60px; height: 60px; background: #fff; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                        <i class="fas fa-robot" style="font-size: 1.8rem; color: #4ca1af;"></i>
+                    </div>
+                    <p style="color: #7f8c8d; font-size: 0.95rem;">Hello! I'm your virtual guide.<br>Tap a quick topic below or type your question.</p>
+                </div>
+
+                <!-- Quick Prompts Container -->
+                <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px;">
+                    ${promptsHtml}
+                </div>
+            </div>
+
+            <!-- Composer bar -->
+            <div id="chatbot-composer" style="
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 15px;
+                background: #fff;
+                border-top: 1px solid #eee;
+            ">
+                <div style="flex: 1; position: relative;">
+                    <input
+                        type="text"
+                        id="chatbot-input"
+                        placeholder="Type your question..."
+                        autocomplete="off"
+                        style="
+                            width: 100%;
+                            padding: 14px 20px;
+                            padding-right: 50px;
+                            border: 2px solid #e0e0e0;
+                            border-radius: 30px;
+                            font-size: 1rem;
+                            outline: none;
+                            transition: border-color 0.2s;
+                            background: #f9f9f9;
+                        "
+                        onfocus="this.style.borderColor='#4ca1af'; this.style.background='#fff';"
+                        onblur="this.style.borderColor='#e0e0e0'; this.style.background='#f9f9f9';"
+                        onkeydown="if(event.key==='Enter'){ sendChatbotMessage(); }"
+                    >
+                </div>
+                
+                <button onclick="sendChatbotMessage()" style="
+                    background: linear-gradient(135deg, #4ca1af, #2c3e50);
+                    color: white;
+                    border: none;
+                    border-radius: 50%;
+                    width: 54px;
+                    height: 54px;
+                    font-size: 1.2rem;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-shrink: 0;
+                    box-shadow: 0 4px 10px rgba(76,161,175,0.3);
+                    transition: transform 0.2s;
+                " onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'" title="Send">
+                    <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
-            <div class="chatbot-container" style="width: 100%; height: 550px; position: relative;">
-                <iframe
-                    src="https://www.chatbase.co/ONi3F76UOQ5dRrwX6NybY/help"
-                    title="Jelioo Kiosk Chatbot"
-                    style="width: 100%; height: 100%; border: none;"
-                    frameborder="0">
-                </iframe>
+            
+             <div style="background: #eee; padding: 8px; text-align: center;">
+                <button onclick="toggleChatbotKeyboard()" style="
+                    background: #fff;
+                    color: #555;
+                    border: 1px solid #ccc;
+                    border-radius: 20px;
+                    padding: 8px 20px;
+                    font-size: 0.85rem;
+                    cursor: pointer;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                ">
+                    <i class="fas fa-keyboard"></i> Toggle Virtual Keyboard
+                </button>
             </div>
         </div>
     `;
+
+    // Focus the input and show keyboard automatically
+    setTimeout(function () {
+        const inp = document.getElementById('chatbot-input');
+        if (inp) {
+            inp.focus();
+            currentInput = inp;
+        }
+        const keyboard = document.getElementById('virtual-keyboard');
+        if (keyboard) keyboard.style.display = 'block';
+    }, 200);
 }
 
-// Toggle keyboard for chatbot
+// Helper to send quick prompt
+function sendQuickPrompt(query) {
+    const inp = document.getElementById('chatbot-input');
+    if (inp) {
+        inp.value = query;
+        sendChatbotMessage();
+    }
+}
+
+// Append a message bubble to the chat history display
+// Append a message bubble to the chat history display
+function appendChatMessage(sender, text, actions = []) {
+    const messagesEl = document.getElementById('chatbot-messages');
+    if (!messagesEl) return;
+
+    chatHistory.push({ sender, text });
+
+    const isUser = sender === 'user';
+    const container = document.createElement('div');
+    container.style.cssText = `
+        display: flex;
+        justify-content: ${isUser ? 'flex-end' : 'flex-start'};
+        align-items: flex-start;
+        gap: 10px;
+        animation: fadeIn 0.3s ease;
+    `;
+
+    // Avatar
+    const avatar = document.createElement('div');
+    if (!isUser) {
+        avatar.innerHTML = `<i class="fas fa-robot" style="color: white; font-size: 0.9rem;"></i>`;
+        avatar.style.cssText = `
+            width: 36px; height: 36px; border-radius: 50%; 
+            background: linear-gradient(135deg, #4ca1af, #2c3e50);
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        `;
+    }
+
+    // Message Bubble
+    const bubble = document.createElement('div');
+    const bubbleStyle = isUser
+        ? 'background: linear-gradient(135deg, #4ca1af, #2c3e50); color: white; border-radius: 18px 18px 4px 18px;'
+        : 'background: #fff; color: #2c3e50; border-radius: 18px 18px 18px 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #eff2f5;';
+
+    bubble.innerHTML = `
+        <div style="${bubbleStyle} padding: 12px 18px; max-width: 100%; font-size: 0.95rem; line-height: 1.5;">
+            ${text.replace(/\n/g, '<br>')}
+        </div>
+    `;
+
+    // Add Actions (Buttons) if present
+    if (actions && actions.length > 0 && !isUser) {
+        const actionContainer = document.createElement('div');
+        actionContainer.style.cssText = 'display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;';
+
+        actions.forEach(action => {
+            const btn = document.createElement('button');
+            btn.innerHTML = action.label;
+            btn.setAttribute('onclick', action.onclick); // Ensure exact string is used
+            btn.style.cssText = `
+                background: #eaf4fb; color: #2980b9; border: 1px solid #d6eaf8;
+                border-radius: 15px; padding: 6px 14px; font-size: 0.85rem; cursor: pointer;
+                transition: all 0.2s; font-weight: 500;
+            `;
+            btn.onmouseover = function () { this.style.background = '#d6eaf8'; };
+            btn.onmouseout = function () { this.style.background = '#eaf4fb'; };
+            actionContainer.appendChild(btn);
+        });
+        bubble.appendChild(actionContainer);
+    }
+
+    // Assemble
+    if (!isUser) container.appendChild(avatar);
+    container.appendChild(bubble);
+
+    messagesEl.appendChild(container);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+// ─── Offline FAQ Engine ────────────────────────────────────────────────────────
+
+const FAQ_DATA = [
+    // Greetings
+    {
+        patterns: ['hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good day', 'kumusta', 'kamusta'],
+        response: 'Hello! 👋 Welcome to Makati High School. I\'m here to help you find rooms, offices, schedules, and more. What would you like to know?',
+        actions: []
+    },
+    // Thanks
+    {
+        patterns: ['thank', 'thanks', 'salamat', 'maraming salamat'],
+        response: 'You\'re welcome! 😊 Feel free to ask me anything else about Makati High School.',
+        actions: []
+    },
+    // Who are you / What can you do
+    {
+        patterns: ['who are you', 'what can you do', 'what do you know', 'help me', 'how do you work', 'ano kaya mo'],
+        response: 'I\'m the Makati High School Kiosk Assistant! 🤖\n\nI can help you with:\n• 📍 Finding rooms and offices\n• 📅 School events and schedules\n• 📞 Contact numbers\n• 🏫 Building locations (A, B, C, D)\n• 📋 Announcements\n• 🎓 General school information',
+        actions: [
+            { label: '📍 View Map', onclick: "showCampusDirectory()" },
+            { label: '📅 View Events', onclick: "viewEvents()" },
+            { label: '📰 View News', onclick: "viewNews()" }
+        ]
+    },
+    // Principal's Office
+    {
+        patterns: ['principal', 'principal office', 'opisina ng principal', 'head'],
+        response: '🏫 The Principal\'s Office is located in Building B (Second Floor).\n\n📞 Contact: 890-8320\n⏰ Office Hours: 7:00 AM – 5:00 PM, Monday to Friday',
+        actions: [
+            { label: '📍 Show Location', onclick: "viewSpecificRoom('Building B', 'Principal Office', { label: 'Principal Office', desc: 'Main Office of the School Principal', img: 'placeholderimg.jpg' })" },
+            { label: '📞 Call Now', onclick: "callSchool()" }
+        ]
+    },
+    // Guidance / Counselor
+    {
+        patterns: ['guidance', 'counselor', 'counseling', 'gabay'],
+        response: '💙 The Guidance & Counseling Office is located in Building C, Floor 1.\n\nThe guidance counselors are available to help students with academic, personal, and career concerns.\n⏰ Office Hours: 7:00 AM – 5:00 PM',
+        actions: [
+            { label: '📍 Show Location', onclick: "viewSpecificRoom('Building C', 'Guidance Office', { label: 'Guidance Office', desc: 'Student Counseling and Support', img: 'placeholderimg.jpg' })" }
+        ]
+    },
+    // Library
+    {
+        patterns: ['library', 'libro', 'aklatan', 'books', 'reading', 'read', 'magbasa', 'research', 'internet'],
+        response: '📚 The School Library is located in Building B.\n\n⏰ Library Hours: 7:00 AM – 5:00 PM\nStudents may borrow books with a valid library card. Silence is required inside the library.',
+        actions: [
+            { label: '📍 View Building B', onclick: "viewBuilding('Building B')" }
+        ]
+    },
+    // Clinic / Nurse
+    {
+        patterns: ['clinic', 'nurse', 'health', 'sick', 'may sakit', 'medical', 'first aid', 'doctor', 'gamot', 'medicine', 'emergency', 'injury', 'blood pressure'],
+        response: '🏥 The School Clinic (Health Office) is located in Building A, Ground Floor.\n\nA school nurse is available for first aid and minor medical concerns.\n⏰ Available: 7:00 AM – 5:00 PM',
+        actions: [
+            { label: '📍 Show Clinic', onclick: "viewSpecificRoom('Building A', 'School Clinic', { label: 'School Clinic', desc: 'Medical and Health Services', img: 'placeholderimg.jpg' })" }
+        ]
+    },
+    // Canteen / Cafeteria
+    {
+        patterns: ['canteen', 'cafeteria', 'food', 'kumain', 'lunch', 'meal', 'tindahan', 'gutom', 'hungry', 'snack', 'drinks', 'tubig', 'water'],
+        response: '🍽️ The School Canteen is located near the ground floor between Buildings B and D.\n\n⏰ Open Hours:\n• Breakfast: 6:30 AM – 7:30 AM\n• Recess: 10:00 AM – 10:30 AM\n• Lunch: 11:30 AM – 1:00 PM',
+        actions: [
+            { label: '📍 View Map', onclick: "showCampusDirectory()" }
+        ]
+    },
+    // Registrar
+    {
+        patterns: ['registrar', 'registration', 'enrollment', 'record', 'tor', 'transcript', 'form 137'],
+        response: '📋 The Registrar\'s Office is located in Building C, Floor 1.\n\nFor student records, TOR, Form 137, and enrollment concerns.\n⏰ Office Hours: 7:00 AM – 5:00 PM\n📞 Contact: 890-5938',
+        actions: [
+            { label: '📍 Show Location', onclick: "viewSpecificRoom('Building C', 'Registrar Office', { label: 'Registrar Office', desc: 'Student Records and Enrollment', img: 'placeholderimg.jpg' })" }
+        ]
+    },
+    // Comfort Room / Restroom
+    {
+        patterns: ['comfort room', 'cr', 'restroom', 'bathroom', 'toilet', 'banyo', 'comfort'],
+        response: '🚻 Comfort rooms are available on every floor of all buildings (A, B, C, D).\n\nPlease keep them clean for everyone. Report any maintenance issues to the Building Administrator.',
+        actions: [
+            { label: '📍 View Campus Map', onclick: "showCampusDirectory()" }
+        ]
+    },
+    // Gymnasium / Gym
+    {
+        patterns: ['gym', 'gymnasium', 'pe', 'physical education', 'sports', 'palakasan'],
+        response: '🏋️ The Gymnasium / PE Area is located at the back of the campus, near Building D.\n\nUsed for Physical Education classes, sports events, and school assemblies.',
+        actions: [
+            { label: '📍 View Building D', onclick: "viewBuilding('Building D')" }
+        ]
+    },
+    // Building A
+    {
+        patterns: ['building a', 'bldg a', 'bldg. a', 'building a'],
+        response: '🏢 Building A (Cyan/Teal Building) — Left side of campus\n\n📍 Contains: Classrooms on Floor 1 & 2\n• Floor 1: Rooms 101, 102\n• Floor 2: Rooms 201, 202\n\nClick below to explore!',
+        actions: [
+            { label: '🏢 View Building A', onclick: "viewBuilding('Building A')" }
+        ]
+    },
+    // Building B
+    {
+        patterns: ['building b', 'bldg b', 'bldg. b'],
+        response: '🏢 Building B (Yellow Building) — Center-left of campus\n\n📍 Contains: Classrooms, Computer Lab, Library\n• Floor 1: Rooms 101, 102\n• Floor 2: Rooms 201, 202\n\nClick below to explore!',
+        actions: [
+            { label: '🏢 View Building B', onclick: "viewBuilding('Building B')" }
+        ]
+    },
+    // Building C
+    {
+        patterns: ['building c', 'bldg c', 'bldg. c'],
+        response: '🏢 Building C (Purple Building) — Right side of campus\n\n📍 Contains: Admin Offices, Principal, Registrar, Guidance\n• Floor 1: Room 101\n• Floor 2: Room 201\n\nClick below to explore!',
+        actions: [
+            { label: '🏢 View Building C', onclick: "viewBuilding('Building C')" }
+        ]
+    },
+    // Building D
+    {
+        patterns: ['building d', 'bldg d', 'bldg. d'],
+        response: '🏢 Building D (Red Building) — Bottom-center of campus\n\n📍 Contains: Classrooms, PE/Science Area\n• Floor 1: Rooms 101, 102\n• Floor 2: Rooms 201, 202\n\nClick below to explore!',
+        actions: [
+            { label: '🏢 View Building D', onclick: "viewBuilding('Building D')" }
+        ]
+    },
+    // Events
+    {
+        patterns: ['event', 'events', 'activity', 'activities', 'upcoming', 'schedule', 'palakasan'],
+        response: '📅 Upcoming Events at Makati High School:\n\n• 📝 Fourth Quarter Exams — March 19–20, 2026\n• 🎓 End-of-School-Year Rites — March 30–31, 2026\n• 👨‍👩‍👧 Parent-Teacher Conference — After Quarter Exams\n• 🏀 Basketball Tournament — Feb 25, 3:00 PM\n• 🔬 Science Fair — Feb 20, 9:00 AM\n\nCheck the Events section for more details!',
+        actions: [
+            { label: '📅 View All Events', onclick: "viewEvents()" }
+        ]
+    },
+    // Announcements
+    {
+        patterns: ['announcement', 'announcements', 'anunsyo', 'news', 'balita', 'update'],
+        response: '📣 Latest Announcements:\n\n• Fourth Quarter Exams: March 19–20, 2026\n• End-of-School-Year Rites: March 30–31, 2026\n• Submit clearance requirements before EOSY Rites\n• Report cards distributed after quarter exams\n• School Year 2025–2026 ends March 31, 2026\n\nStay tuned to the Announcements section for updates!',
+        actions: [
+            { label: '📢 Read Announcements', onclick: "readAnnouncements()" },
+            { label: '📰 Social Media News', onclick: "viewNews()" }
+        ]
+    },
+    // Exam / Quarter Exams
+    {
+        patterns: ['exam', 'exams', 'test', 'quarter exam', 'fourth quarter', '4th quarter', 'pagsusulit'],
+        response: '📝 Fourth Quarter Examinations\n\n📅 Date: March 19–20, 2026\n\nMake sure to review your subjects and prepare your requirements. Good luck! 🍀\n\nFor concerns about exams, visit the Registrar\'s Office in Building C.',
+        actions: [
+            { label: '📅 Check Schedule', onclick: "viewEvents()" }
+        ]
+    },
+    // Graduation / EOSY
+    {
+        patterns: ['graduation', 'eosy', 'end of school year', 'moving up', 'commencement', 'graduate'],
+        response: '🎓 End-of-School-Year Rites (Graduation)\n\n📅 Date: March 30–31, 2026\n📍 Venue: School Gymnasium\n\nStudents must complete all clearance requirements before the EOSY Rites. Congratulations in advance! 🎉',
+        actions: [
+            { label: '📅 Check Events', onclick: "viewEvents()" }
+        ]
+    },
+    // Clearance
+    {
+        patterns: ['clearance', 'requirements', 'submit clearance'],
+        response: '📋 School Clearance\n\nAll students must submit clearance requirements before the EOSY Rites (March 30–31, 2026).\n\nVisit the Registrar\'s Office (Building C, Floor 1) for your clearance form and instructions.',
+        actions: [
+            { label: '📍 Go to Registrar', onclick: "viewSpecificRoom('Building C', 'Registrar Office', { label: 'Registrar Office', desc: 'Student Records and Enrollment', img: 'placeholderimg.jpg' })" }
+        ]
+    },
+    // Contact numbers
+    {
+        patterns: ['contact', 'phone', 'call', 'number', 'telepono', 'hotline'],
+        response: '📞 Makati High School Contact Numbers:\n\n• Principal\'s Office: 890-8320\n• Main Office: 890-5938\n\n📍 Address: Gen. Luna Street Poblacion, Makati City\n⏰ Office Hours: 7:00 AM – 5:00 PM, Monday to Friday',
+        actions: [
+            { label: '📞 Call Now', onclick: "callSchool()" }
+        ]
+    },
+    // Address / Location
+    {
+        patterns: ['address', 'location', 'where', 'saan', 'makati', 'lugar'],
+        response: '📍 Makati High School\nGen. Luna Street Poblacion, Makati City\n\nThe school is accessible via public transport. Use the Campus Map in the main screen for directions!',
+        actions: [
+            { label: '🗺️ Open Map', onclick: "showCampusDirectory()" }
+        ]
+    },
+    // Class schedule / School hours
+    {
+        patterns: ['class', 'schedule', 'school hours', 'time', 'start', 'dismiss', 'klase', 'oras'],
+        response: '⏰ School Schedule:\n\n• School Gates Open: 6:00 AM\n• Classes Start: 7:00 AM\n• Dismissal (AM): 12:00 PM\n• Dismissal (PM): 5:00 PM\n\n📅 School days: Monday – Friday\n(Subject to change based on school announcements)',
+        actions: []
+    },
+    // Flag ceremony / Flag raising
+    {
+        patterns: ['flag', 'ceremony', 'flag ceremony', 'flag raising', 'lunes', 'monday'],
+        response: '🏳️ Flag Raising Ceremony\n\nEvery Monday morning before classes begin.\n\nAll students, teachers, and staff are expected to attend in proper school uniform.',
+        actions: []
+    },
+    // Uniform
+    {
+        patterns: ['uniform', 'damit', 'dress code', 'attire'],
+        response: '👕 School Uniform Policy:\n\n• Monday–Friday: Complete school uniform required\n• PE Days: PE uniform allowed during PE class only\n• ID must be worn at all times inside the campus\n\nFor uniform violations, report to the Discipline Office in Building C.',
+        actions: [
+            { label: '📍 Discipline Office', onclick: "viewSpecificRoom('Building C', 'Discipline Office', { label: 'Discipline Office', desc: 'Student Discipline and Conduct', img: 'placeholderimg.jpg' })" }
+        ]
+    },
+    // ID
+    {
+        patterns: ['id', 'identification', 'school id', 'lose id', 'lost id'],
+        response: '🪪 School ID\n\nAll students must wear their school ID at all times inside the campus.\n\nFor lost IDs or replacement:\n📍 Visit the Registrar\'s Office — Building C, Floor 1\n📞 Contact: 890-5938',
+        actions: [
+            { label: '📍 Go to Registrar', onclick: "viewSpecificRoom('Building C', 'Registrar Office', { label: 'Registrar Office', desc: 'Student Records and Enrollment', img: 'placeholderimg.jpg' })" }
+        ]
+    },
+    // Wifi / Internet
+    {
+        patterns: ['wifi', 'internet', 'connection', 'network'],
+        response: '📡 School WiFi\n\nMakati High School has WiFi access in selected areas (library, admin offices).\n\nFor WiFi access issues, contact the ICT Office in Building B.',
+        actions: [
+            { label: '📍 View Building B', onclick: "viewBuilding('Building B')" }
+        ]
+    },
+    // About the school
+    {
+        patterns: ['about', 'history', 'school', 'makati high', 'mhs', 'about school'],
+        response: '🏫 About Makati High School\n\nMakati High School (MHS) is one of the premier public high schools in Makati City. Founded in 1968, it has been providing quality education to thousands of students.\n\n📍 Gen. Luna Street Poblacion, Makati City\n📞 890-8320 / 890-5938\n\nThe school has 4 buildings (A, B, C, D) with various classrooms, labs, offices, and facilities.',
+        actions: [
+            { label: '👥 Meet the Team', onclick: "AboutUs()" }
+        ]
+    },
+    // How to find a room
+    {
+        patterns: ['how to find', 'find room', 'where is room', 'locate', 'hanap', 'hanapin'],
+        response: '🗺️ How to Find a Room:\n\n1️⃣ Use the **Search Bar** at the top-left — type the room number or name\n2️⃣ Go to **Campus Directory** in the sidebar — click a building to see all rooms\n3️⃣ Ask me! Just type something like "Where is Room 101?" and I\'ll help!\n\nEach room has a "Tap for Directions" button that shows the path to get there.',
+        actions: [
+            { label: '🗺️ Go to Directory', onclick: "showCampusDirectory()" }
+        ]
+    },
+    // Goodbye
+    {
+        patterns: ['bye', 'goodbye', 'paalam', 'see you', 'exit', 'close', 'quit'],
+        response: 'Thank you for using the Makati High School Kiosk! 👋\n\nHave a great day and good luck with your classes! 🎓',
+        actions: []
+    },
+    // Social Media / Facebook
+    {
+        patterns: ['facebook', 'fb', 'page', 'social media', 'online', 'post'],
+        response: '📱 **Official Social Media**\n\nStay updated with our latest news and announcements!\n\nYou can view the latest posts from our Facebook Page right here.',
+        actions: [
+            { label: '📰 View News Feed', onclick: "viewNews()" },
+            { label: '📅 View Events', onclick: "viewEvents()" }
+        ]
+    },
+    // Mission and Vision
+    {
+        patterns: ['mission', 'vision', 'goal', 'objective', 'layunin'],
+        response: '📜 **DepEd Mission**:\nTo protect and promote the right of every Filipino to quality, equitable, culture-based, and complete basic education where:\nStudents learn in a child-friendly, gender-sensitive, safe, and motivating environment.\nTeachers facilitate learning and constantly nurture every learner.\n\n👁️ **DepEd Vision**:\nWe dream of Filipinos who passionately love their country and whose values and competencies enable them to realize their full potential and contribute meaningfully to building the nation.',
+        actions: []
+    },
+    // School Hymn
+    {
+        patterns: ['hymn', 'song', 'kanta', 'awit', 'school hymn'],
+        response: '🎵 **Makati High School Hymn**\n\n(Verse)\nWithin the heart of Makati City\nStands a school of loyalty\nAlma Mater dear, we sing to thee\nA song of love and memory...\n\n(Chorus)\nMakati High, Makati High\nThy banner waves up high...',
+        actions: []
+    },
+    // Science Lab
+    {
+        patterns: ['science lab', 'laboratory', 'chemistry', 'biology', 'physics'],
+        response: '🔬 **Science Laboratories** are located in **Building D** (4th Floor).\n\nStrict safety protocols must be observed at all times. Lab gowns are required during experiments.',
+        actions: [
+            { label: '📍 View Building D', onclick: "viewBuilding('Building D')" }
+        ]
+    },
+    // Computer Lab
+    {
+        patterns: ['computer lab', 'comlab', 'ict room'],
+        response: '💻 **Computer Laboratories** are located in **Building B** (3rd Floor) and **Building D**.\n\nStudents are allowed to use the lab during scheduled classes or with a teacher\'s permit.',
+        actions: [
+            { label: '📍 View Building B', onclick: "viewBuilding('Building B')" }
+        ]
+    },
+    // TLE Rooms
+    {
+        patterns: ['tle', 'cookery', 'he', 'home economics', 'industrial arts'],
+        response: '🍳 **TLE Rooms** (Cookery, Dressmaking, Drafting) are located in **Building A** and **Building D**.\n\nCheck your schedule for the specific room assignment.',
+        actions: [
+            { label: '📍 View Building A', onclick: "viewBuilding('Building A')" }
+        ]
+    },
+    // Lost and Found
+    {
+        patterns: ['lost', 'found', 'nawala', 'nawawala', 'missing item'],
+        response: '🛑 **Lost & Found**\n\nIf you lost an item, please check with the **Guidance Office** or **Discipline Office** in Building C.\n\nIf you found an item, please turn it over to any guard or teacher.',
+        actions: [
+            { label: '📍 Go to Guidance', onclick: "viewSpecificRoom('Building C', 'Guidance Office', { label: 'Guidance Office', desc: 'Student Counseling and Support', img: 'placeholderimg.jpg' })" }
+        ]
+    },
+    // Good Moral
+    {
+        patterns: ['good moral', 'certificate', 'moral character'],
+        response: '📄 **Certificate of Good Moral Character**\n\nRequest at the **Guidance Office** (Building C).\n\n**Requirements:**\n1. School ID\n2. Receipt of Payment (if applicable)\n3. Request Form',
+        actions: [
+            { label: '📍 Go to Guidance', onclick: "viewSpecificRoom('Building C', 'Guidance Office', { label: 'Guidance Office', desc: 'Student Counseling and Support', img: 'placeholderimg.jpg' })" }
+        ]
+    },
+    // Form 137
+    {
+        patterns: ['form 137', 'f137', 'permanent record', 'sf10'],
+        response: '📄 **Form 137 / SF10 Request**\n\nRequest at the **Registrar\'s Office** (Building C).\n\n**Note:** This document is usually school-to-school transaction. Personal requests may require a valid reason and ID.',
+        actions: [
+            { label: '📍 Go to Registrar', onclick: "viewSpecificRoom('Building C', 'Registrar Office', { label: 'Registrar Office', desc: 'Student Records and Enrollment', img: 'placeholderimg.jpg' })" }
+        ]
+    },
+    // Grading System
+    {
+        patterns: ['grade', 'grading', 'compute', 'passing'],
+        response: '📊 **K-12 Grading System**\n\nYour grade is composed of:\n1. **Written Work** (Quizzes, Long Tests)\n2. **Performance Tasks** (Projects, Reporting)\n3. **Quarterly Assessment** (Periodical Exams)\n\nPassing grade is **75%**.',
+        actions: []
+    },
+    // Clubs
+    {
+        patterns: ['club', 'org', 'organization', 'join', 'sali', 'extra curricular', 'interest', 'group'],
+        response: '🤝 **Student Organizations**\n\nJoin a club to develop your skills!\n• **SSG** (Supreme Student Government)\n• **Science Club**\n• **Math Club**\n• **English Club**\n• **Filipino Club**\n• **Glee Club**\n• **Dance Troupe**\n\nVisit the **SSG Office** in Building C for more info.',
+        actions: [
+            { label: '📍 View Building C', onclick: "viewBuilding('Building C')" }
+        ]
+    },
+    // Disaster / Earthquake
+    {
+        patterns: ['earthquake', 'fire', 'drill', 'emergency', 'evacuation', 'lindol', 'sunog', 'safety'],
+        response: '🚨 **Emergency Protocols**\n\n**Earthquake:** DUCK, COVER, and HOLD. Wait for the shaking to stop before evacuating to the open grounds (Oval).\n\n**Fire:** Evacuate calmly using the nearest exit. Do not run.\n\nFollow your teacher\'s instructions at all times.',
+        actions: [
+            { label: '📍 View Map', onclick: "showCampusDirectory()" }
+        ]
+    },
+    // Washday / Uniform Schedule
+    {
+        patterns: ['wash day', 'washday', 'civilian', 'what to wear', 'suot'],
+        response: '👕 **Wash Day Schedule**\n\nThere is usually no designated "Wash Day" for students unless announced.\n\nPlease wear your complete school uniform from Monday to Friday.',
+        actions: []
+    },
+    // Supreme Student Government (SSG)
+    {
+        patterns: ['ssg', 'student government', 'officers', 'student council'],
+        response: '🗳️ **Supreme Student Government (SSG)**\n\nThe SSG Office is located in **Building C**.\n\nThey handle student activities, concerns, and wider school programs.',
+        actions: [
+            { label: '📍 View Building C', onclick: "viewBuilding('Building C')" }
+        ]
+    }
+];
+
+// Match user input against FAQ patterns
+// Match user input against FAQ patterns
+function getOfflineBotReply(userText) {
+    const input = userText.toLowerCase().trim();
+
+    // Try to find a matching FAQ entry
+    for (const faq of FAQ_DATA) {
+        for (const pattern of faq.patterns) {
+            if (input.includes(pattern)) {
+                return { text: faq.response, actions: faq.actions || [] };
+            }
+        }
+    }
+
+    // Check if user is asking about a room number generically
+    // Matches "Room 101", "Rm 101", "101", "Room 405"
+    const roomMatch = input.match(/(?:room|rm\.?|kwarto)\s*(\d+)|(\b\d{3}\b)/i);
+    if (roomMatch) {
+        const num = roomMatch[1] || roomMatch[2];
+        // Use the helper to find exact locations
+        const locations = findRoomLocations(num);
+
+        if (locations.length > 0) {
+            let responseText = `I found **Room ${num}** in the following location(s):\n\n`;
+            let actions = [];
+
+            locations.forEach(loc => {
+                const floorLabel = loc.floor == 1 ? '1st Floor' : loc.floor == 2 ? '2nd Floor' : loc.floor + 'th Floor';
+                responseText += `• **${loc.building}** (${floorLabel}) — ${loc.room.desc}\n`;
+
+                // Construct a safe onclick handler
+                // We use viewBuilding as a fallback if viewSpecificRoom isn't robust, but let's try to be specific
+                // Simplest is to just show the building map, but user wants specific navigation.
+                // We need to ensure we can pass the room object.
+                // Let's use a global temporary storage or just simpler arguments.
+
+                // For now, let's just use viewBuilding but maybe we can trigger the specific room highlight?
+                // Actually, let's just use viewBuilding with the room name if possible, or just the building.
+                // The most reliable way without complex escaping is to just view the building.
+                // But the user asked for "specific navigation".
+                // I will add a helper "navigateToRoom(bldg, floor, roomLabel)" if needed.
+
+                // Let's try to pass the arguments cleanly.
+                // Since we have the data, we can just say "View Building X" and maybe the user can find it?
+                // No, "Tap for Directions" is what they want.
+                // If I use `viewSpecificRoom`, I need to make sure the arguments are valid JS.
+                const safeLabel = loc.room.label.replace(/'/g, "\\'");
+                const safeDesc = loc.room.desc.replace(/'/g, "\\'");
+                const safeImg = loc.room.img;
+
+                actions.push({
+                    label: `📍 Show ${loc.building} (${floorLabel})`,
+                    onclick: `viewSpecificRoom('${loc.building}', '${safeLabel}', { label: '${safeLabel}', desc: '${safeDesc}', img: '${safeImg}' }, ${loc.floor})`
+                });
+            });
+
+            responseText += `\nClick a button to see the map!`;
+            return { text: responseText, actions: actions };
+        } else {
+            return {
+                text: `I couldn't find "Room ${num}" in my directory. It might be a new room or I might need an update.\n\nTry using the **Search Bar** to double check!`,
+                actions: [
+                    { label: '🔍 Search Now', onclick: "document.getElementById('search-input').focus()" }
+                ]
+            };
+        }
+    }
+
+    // Check if asking about a building generically
+    const buildingMatch = input.match(/building\s*([abcd])/i);
+    if (buildingMatch) {
+        const letter = buildingMatch[1].toUpperCase();
+        return {
+            text: `🏢 Building ${letter} is one of the main buildings on campus. Click on it in the **Campus Directory** map to explore its floors and rooms!`,
+            actions: [
+                { label: `View Building ${letter}`, onclick: `viewBuilding('Building ${letter}')` }
+            ]
+        };
+    }
+
+    // Default fallback
+    return {
+        text: `I'm not sure about that, but I can help you with:\n\n• 📍 Room & office locations\n• 📅 Events and schedules\n• 📞 Contact numbers\n• 🏫 Buildings A, B, C, D\n• 📋 Announcements & clearance\n\nTry rephrasing your question, or use the **Search Bar** to find rooms directly!`,
+        actions: [
+            { label: '🗺️ Campus Map', onclick: "showCampusDirectory()" },
+            { label: '📅 School Events', onclick: "viewEvents()" }
+        ]
+    };
+}
+
+// Send message and get offline bot reply
+// Send message and get offline bot reply
+function sendChatbotMessage() {
+    const inp = document.getElementById('chatbot-input');
+    if (!inp) return;
+    const text = inp.value.trim();
+    if (!text) return;
+
+    appendChatMessage('user', text);
+    inp.value = '';
+
+    // Keep keyboard linked to input
+    inp.focus();
+    currentInput = inp;
+
+    // Show typing indicator with slight delay for natural feel
+    const messagesEl = document.getElementById('chatbot-messages');
+    const typingId = 'chatbot-typing-' + Date.now();
+    if (messagesEl) {
+        const typing = document.createElement('div');
+        typing.id = typingId;
+        typing.style.cssText = 'display:flex; align-items:center; gap:8px; animation: fadeIn 0.3s ease;';
+        typing.innerHTML = `
+            <div style="width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,#4ca1af,#2c3e50);
+                 display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                <i class="fas fa-robot" style="color:white; font-size:0.8rem;"></i>
+            </div>
+            <div style="background:#fff; border:1px solid #e0e4e8; border-radius:18px 18px 18px 4px; padding:10px 18px; font-size:0.9rem; color:#999; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <i class="fas fa-circle" style="font-size:0.4rem; animation: pulse 1s infinite;"></i>
+                <i class="fas fa-circle" style="font-size:0.4rem; animation: pulse 1s 0.2s infinite;"></i>
+                <i class="fas fa-circle" style="font-size:0.4rem; animation: pulse 1s 0.4s infinite;"></i>
+                &nbsp;Typing...
+            </div>
+        `;
+        messagesEl.appendChild(typing);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    // Simulate a short thinking delay then respond
+    setTimeout(function () {
+        const typingEl = document.getElementById(typingId);
+        if (typingEl) typingEl.remove();
+
+        const replyData = getOfflineBotReply(text);
+        appendChatMessage('bot', replyData.text, replyData.actions);
+    }, 700);
+}
+
+// Toggle keyboard for chatbot — focuses the chatbot input
 function toggleChatbotKeyboard() {
     const keyboard = document.getElementById('virtual-keyboard');
+    const inp = document.getElementById('chatbot-input');
+
     if (keyboard) {
         if (keyboard.style.display === 'block') {
             keyboard.style.display = 'none';
         } else {
             keyboard.style.display = 'block';
-            // Create a hidden input to receive keyboard input
-            let hiddenInput = document.getElementById('chatbot-hidden-input');
-            if (!hiddenInput) {
-                hiddenInput = document.createElement('input');
-                hiddenInput.id = 'chatbot-hidden-input';
-                hiddenInput.type = 'text';
-                hiddenInput.style.position = 'absolute';
-                hiddenInput.style.opacity = '0';
-                hiddenInput.style.pointerEvents = 'none';
-                document.body.appendChild(hiddenInput);
-            }
-            currentInput = hiddenInput;
-            hiddenInput.focus();
         }
+    }
+
+    // Always point the virtual keyboard to the chatbot text input
+    if (inp) {
+        inp.focus();
+        currentInput = inp;
     }
 }
 
@@ -736,6 +1454,68 @@ function viewSpecificRoom(buildingName, roomCode, roomData) {
                 <h4 style="color: #2c3e50; margin-bottom: 5px;">${translate('buttons.tap_directions')}</h4>
                 <p style="color: #666; font-size: 0.9rem;">${translate('labels.show_path')} ${label}</p>
             </div>
+        </div>
+    `;
+
+    const modal = document.getElementById('assistant-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+// Show all rooms matching a given room number across all buildings (room directory view)
+function showMultipleRoomResults(roomNumber, matches) {
+    const cardGrid = document.getElementById('card-grid');
+
+    let cardsHtml = '';
+    matches.forEach(function (m) {
+        const room = m.room;
+        const buildingName = m.building;
+        const floor = m.floor;
+        const safeLabel = room.label.replace(/'/g, "\\'");
+        const safeBuilding = buildingName.replace(/'/g, "\\'");
+        const roomImg = room.img || 'placeholderimg.jpg';
+
+        cardsHtml += `
+            <div class="card" onclick="locateRoom('${safeBuilding}', '${safeLabel}')"
+                 style="cursor: pointer; padding: 0; overflow: hidden; transition: transform 0.2s;"
+                 onmouseover="this.style.transform='translateY(-4px)'"
+                 onmouseout="this.style.transform='translateY(0)'">
+                <div style="height: 180px; overflow: hidden; background: #eee;">
+                    <img src="${roomImg}" onerror="this.src='placeholderimg.jpg'"
+                         style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;"
+                         onmouseover="this.style.transform='scale(1.08)'"
+                         onmouseout="this.style.transform='scale(1)'">
+                </div>
+                <div style="padding: 15px;">
+                    <h4 style="margin-top: 0; margin-bottom: 5px; color: #2c3e50; font-size: 1.1rem;">
+                        <i class="fas fa-door-open" style="color: #4ca1af;"></i> ${room.label}
+                    </h4>
+                    <p style="margin: 0 0 8px; font-size: 0.9rem; color: #7f8c8d;">${room.desc}</p>
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                        <span style="background: #eaf4fb; color: #2980b9; padding: 3px 10px; border-radius: 12px; font-size: 0.82rem;">
+                            <i class="fas fa-building"></i> ${buildingName}
+                        </span>
+                        <span style="background: #eaf4fb; color: #2980b9; padding: 3px 10px; border-radius: 12px; font-size: 0.82rem;">
+                            <i class="fas fa-layer-group"></i> Floor ${floor}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    cardGrid.innerHTML = `
+        <div class="card" style="grid-column: 1 / -1; display:flex; align-items:center; gap:15px; background:linear-gradient(to right, #4ca1af, #2c3e50); color:white;">
+            <button onclick="showCampusDirectory()" style="background:rgba(255,255,255,0.2); border:none; color:white; padding:10px 15px; border-radius:5px; cursor:pointer; font-size:1rem;">
+                <i class="fas fa-arrow-left"></i> Back to Directory
+            </button>
+            <div>
+                <h3 style="margin:0; border:none; color:white;">Room ${roomNumber} — All Locations</h3>
+                <p style="margin:4px 0 0; font-size:0.85rem; opacity:0.85;">Found in ${matches.length} building(s) — tap a card to see details</p>
+            </div>
+        </div>
+
+        <div style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;">
+            ${cardsHtml}
         </div>
     `;
 
@@ -994,4 +1774,158 @@ function handleFileUpload(input) {
 
     // Reset input
     input.value = '';
+}
+
+// ─── Events & News Implementation ─────────────────────────────────────────────
+
+function getDefaultEvents() {
+    return [
+        {
+            title: "Science Fair 2026",
+            date: "Feb 20, 2026 • 8:00 AM - 4:00 PM",
+            desc: "Showcasing student innovations and experiments. Venue: School Gymnasium.",
+            img: "placeholderimg.jpg",
+            tag: "Academic"
+        },
+        {
+            title: "Basketball Championship",
+            date: "Feb 25, 2026 • 3:00 PM",
+            desc: "Makati High vs. Rizal High. Come and support our team! Venue: Covered Court.",
+            img: "placeholderimg.jpg",
+            tag: "Sports"
+        },
+        {
+            title: "Fourth Quarter Exams",
+            date: "March 19–20, 2026",
+            desc: "Please settle all accountabilities before the examination dates.",
+            img: "placeholderimg.jpg",
+            tag: "Exams"
+        },
+        {
+            title: "EOSY Graduation Rites",
+            date: "March 30, 2026 • 1:00 PM",
+            desc: "Celebrating the Class of 2026. Theme: 'Kabataang Pilipino: Tanglaw ng Kinabukasan'.",
+            img: "placeholderimg.jpg",
+            tag: "Event"
+        }
+    ];
+}
+
+function getDefaultAnnouncements() {
+    return [
+        {
+            title: "No Classes - Cityhood Anniversary",
+            date: "Feb 28, 2026",
+            content: "Please be informed that there will be no classes on February 28 in celebration of Makati Cityhood.",
+            source: "Makati High School - Official FB Page",
+            img: "placeholderimg.jpg"
+        },
+        {
+            title: "School ID Verification",
+            date: "Feb 15, 2026",
+            content: "All students are required to validate their School IDs at the Registrar's Office before March 1.",
+            source: "Registrar's Office",
+            img: "placeholderimg.jpg"
+        },
+        {
+            title: "Club Registration Extended",
+            date: "Feb 10, 2026",
+            content: "SSG has extended the club membership registration until next Friday. Join now!",
+            source: "SSG FB Page",
+            img: "placeholderimg.jpg"
+        }
+    ];
+}
+
+function viewEvents() {
+    const cardGrid = document.getElementById('card-grid');
+    // Try to get from local storage or use default
+    let events = [];
+    try {
+        const stored = localStorage.getItem('kiosk_events');
+        if (stored) events = JSON.parse(stored);
+    } catch (e) { console.error(e); }
+
+    if (events.length === 0) events = getDefaultEvents();
+
+    let cardsHtml = '';
+    events.forEach(ev => {
+        cardsHtml += `
+            <div class="card" style="padding:0; overflow:hidden;">
+                <div style="height:140px; background:#eee; position:relative;">
+                     <img src="${ev.img || 'placeholderimg.jpg'}" onerror="this.src='placeholderimg.jpg'" style="width:100%; height:100%; object-fit:cover;">
+                     <span style="position:absolute; top:10px; right:10px; background:#e74c3c; color:white; padding:3px 8px; border-radius:4px; font-size:0.75rem;">
+                        ${ev.tag || 'Event'}
+                     </span>
+                </div>
+                <div style="padding:15px;">
+                    <span style="color:#e67e22; font-size:0.85rem; font-weight:bold;">${ev.date}</span>
+                    <h4 style="margin:5px 0; color:#2c3e50;">${ev.title}</h4>
+                    <p style="color:#666; font-size:0.9rem; line-height:1.4;">${ev.desc}</p>
+                </div>
+            </div>
+        `;
+    });
+
+    cardGrid.innerHTML = `
+        <div class="card" style="grid-column: 1 / -1; display:flex; align-items:center; gap:15px; background:linear-gradient(to right, #e67e22, #d35400); color:white;">
+            <button onclick="window.history.back(); location.reload();" style="background:rgba(255,255,255,0.2); border:none; color:white; padding:10px 15px; border-radius:5px; cursor:pointer; font-size:1rem;">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <h3 style="margin:0; border:none; color:white;">📅 Upcoming Events</h3>
+        </div>
+        <div style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+            ${cardsHtml}
+        </div>
+    `;
+
+    const modal = document.getElementById('assistant-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+function viewNews() {
+    readAnnouncements();
+}
+
+function readAnnouncements() {
+    const cardGrid = document.getElementById('card-grid');
+    // Try to get from local storage or use default
+    let news = [];
+    try {
+        const stored = localStorage.getItem('kiosk_announcements');
+        if (stored) news = JSON.parse(stored);
+    } catch (e) { console.error(e); }
+
+    if (news.length === 0) news = getDefaultAnnouncements();
+
+    let cardsHtml = '';
+    news.forEach(item => {
+        cardsHtml += `
+            <div class="card" style="padding:20px; border-left: 4px solid #3498db;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <span style="background:#eaf4fb; color:#2980b9; padding:4px 10px; border-radius:15px; font-size:0.8rem;">
+                        <i class="fab fa-facebook"></i> ${item.source || 'Announcement'}
+                    </span>
+                    <span style="color:#999; font-size:0.85rem;">${item.date}</span>
+                </div>
+                <h3 style="margin:0 0 10px; color:#2c3e50;">${item.title}</h3>
+                <p style="color:#555; line-height:1.6;">${item.content}</p>
+            </div>
+        `;
+    });
+
+    cardGrid.innerHTML = `
+        <div class="card" style="grid-column: 1 / -1; display:flex; align-items:center; gap:15px; background:linear-gradient(to right, #3498db, #2980b9); color:white;">
+            <button onclick="window.history.back(); location.reload();" style="background:rgba(255,255,255,0.2); border:none; color:white; padding:10px 15px; border-radius:5px; cursor:pointer; font-size:1rem;">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <h3 style="margin:0; border:none; color:white;">📢 News & Announcements</h3>
+        </div>
+        <div style="grid-column: 1 / -1; display: flex; flex-direction: column; gap: 15px;">
+            ${cardsHtml}
+        </div>
+    `;
+
+    const modal = document.getElementById('assistant-modal');
+    if (modal) modal.style.display = 'none';
 }
