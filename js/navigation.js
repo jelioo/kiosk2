@@ -1,5 +1,5 @@
 ﻿// Global Constants
-const REFRESH_TIME = 300000; // 5 minutes auto-refresh
+const REFRESH_TIME = 600000; // 10 minutes auto-refresh
 const RATING_TIME = 180000;  // 3 minutes before rating prompt
 
 // Navigation Functions

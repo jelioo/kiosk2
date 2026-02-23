@@ -68,7 +68,7 @@ function buildIntroHTML() {
                 <button class="intro-btn" id="intro-skip-btn" onclick="closeIntro()">
                     Got it! Let's explore ✨
                 </button>
-                <p class="intro-note">This guide won't show again on your next visit.</p>
+                <p class="intro-note">This guide will auto-close in 10 minutes.</p>
             </div>
         </div>
     </div>`;
@@ -81,14 +81,10 @@ function closeIntro() {
     setTimeout(() => {
         overlay.remove();
     }, 600);
-    try { localStorage.setItem('mhs_intro_seen', '1'); } catch (e) { }
 }
 
 function initIntro() {
-    // Check if user has seen the intro before
-    let seen = false;
-    try { seen = localStorage.getItem('mhs_intro_seen') === '1'; } catch (e) { }
-    if (seen) return;
+    // Always show the intro on every page load/refresh
 
     // Inject HTML
     document.body.insertAdjacentHTML('beforeend', buildIntroHTML());
@@ -102,6 +98,9 @@ function initIntro() {
             }, 500 + i * 140);
         }
     });
+
+    // Auto-close after 10 minutes (600,000 ms)
+    setTimeout(closeIntro, 10 * 60 * 1000);
 }
 
 // Launch after page fully loads
