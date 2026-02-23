@@ -476,13 +476,13 @@ function AboutUs() {
         </div>
         
         <div class="card member-card">
-            <img src="placeholderimg.jpg" alt="Clarence Andrei B. Santelices" class="member-image">
+            <img src="Clarence Andrei Santelices.jpg" onerror="this.src='placeholderimg.jpg'" alt="Clarence Andrei B. Santelices" class="member-image">
             <div class="member-name">SANTELICES, CLARENCE ANDREI B.</div>
             <div class="member-role">${translate('team.research_leader')}</div>
         </div>
 
         <div class="card member-card">
-            <img src="placeholderimg.jpg" alt="Christian Lloyd M. Aragon" class="member-image">
+            <img src="Christian Aragon.jpg" onerror="this.src='placeholderimg.jpg'" alt="Christian Lloyd M. Aragon" class="member-image">
             <div class="member-name">ARAGON, CHRISTIAN LLOYD M.</div>
             <div class="member-role">${translate('team.co_researcher')}</div>
         </div>
@@ -494,7 +494,7 @@ function AboutUs() {
         </div>
 
         <div class="card member-card">
-            <img src="placeholderimg.jpg" alt="Mikeria Angela F. Morondos" class="member-image">
+            <img src="Mikeria Morondos.jpg" onerror="this.src='placeholderimg.jpg'" alt="Mikeria Angela F. Morondos" class="member-image">
             <div class="member-name">MORONDOS, MIKERIA ANGELA F.</div>
             <div class="member-role">${translate('team.co_researcher')}</div>
         </div>
