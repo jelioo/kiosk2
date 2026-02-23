@@ -395,40 +395,75 @@ function exportData() {
 
 // View Events function
 function viewEvents() {
+    window.currentView = 'events';
     const cardGrid = document.getElementById('card-grid');
 
-    // Default Events
+    // Default events — use labelled local placeholder images
     const defaultEvents = [
-        { title: "Science Fair", date: "Feb 20, 9:00 AM" },
-        { title: "Basketball Tournament", date: "Feb 25, 3:00 PM" },
-        { title: "Parent-Teacher Conference", date: "Feb 28, 1:00 PM" },
-        { title: "Math Olympiad", date: "Mar 5, 8:00 AM" },
-        { title: "Arts Festival", date: "Mar 15, 10:00 AM" },
-        { title: "Graduation Ceremony", date: "Mar 27, 2:00 PM" }
+        {
+            title: 'Science Fair',
+            date: 'Feb 20, 9:00 AM',
+            tag: 'Academic',
+            img: 'science_fair placeholder.jpg',
+            desc: 'Annual science fair showcasing student research and innovation projects.'
+        },
+        {
+            title: 'Basketball Championship',
+            date: 'Feb 25, 3:00 PM',
+            tag: 'Sports',
+            img: 'bball championship placeholder.jpg',
+            desc: 'Interschool basketball championship tournament at the school gymnasium.'
+        },
+        {
+            title: 'Fourth Quarter Exams',
+            date: 'March 19–20, 2026',
+            tag: 'Academic',
+            img: 'exams placeholder.jpg',
+            desc: 'Fourth Quarter periodic examinations for all grade levels.'
+        },
+        {
+            title: 'End-of-School-Year Rites',
+            date: 'March 30–31, 2026',
+            tag: 'Ceremony',
+            img: 'graduation rites placeholder.jpg',
+            desc: 'End-of-school-year rites and graduation ceremony for graduating students.'
+        }
     ];
 
     let events = defaultEvents;
     try {
-        const storedEvents = localStorage.getItem('kiosk_events');
-        if (storedEvents) {
-            events = JSON.parse(storedEvents);
-        }
-    } catch (e) {
-        console.warn('Error loading events:', e);
-    }
+        const stored = localStorage.getItem('kiosk_events');
+        if (stored) events = JSON.parse(stored);
+    } catch (e) { console.warn('Error loading events:', e); }
 
-    let eventsHtml = '';
-    events.forEach(event => {
-        eventsHtml += `<li><span>${event.title}</span> <span class="event-date">${event.date}</span></li>`;
+    let cardsHtml = '';
+    events.forEach(ev => {
+        cardsHtml += `
+            <div class="card" style="padding:0; overflow:hidden;">
+                <div style="height:150px; position:relative;">
+                    <img src="${ev.img || 'placeholderimg.jpg'}" onerror="this.src='placeholderimg.jpg'" style="width:100%; height:100%; object-fit:cover;">
+                    <span style="position:absolute; top:10px; right:10px; background:#e74c3c; color:white; padding:3px 8px; border-radius:4px; font-size:0.75rem; font-weight:600;">
+                        ${ev.tag || 'Event'}
+                    </span>
+                </div>
+                <div style="padding:15px;">
+                    <span style="color:#e67e22; font-size:0.85rem; font-weight:bold;">${ev.date}</span>
+                    <h4 style="margin:5px 0; color:#2c3e50;">${ev.title}</h4>
+                    <p style="color:#666; font-size:0.88rem; line-height:1.4; margin:0;">${ev.desc || ''}</p>
+                </div>
+            </div>
+        `;
     });
 
-    cardGrid.innerHTML =
-        '<div class="card">' +
-        '<h3><i class="fas fa-calendar-day"></i> Upcoming Events</h3>' +
-        '<ul class="event-list">' +
-        eventsHtml +
-        '</ul>' +
-        '</div>';
+    cardGrid.innerHTML = `
+        <div class="card about-title-card">
+            <h3><i class="fas fa-calendar-day"></i> Upcoming Events</h3>
+            <p>School events and activities this semester</p>
+        </div>
+        <div style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px;">
+            ${cardsHtml}
+        </div>
+    `;
     const modal = document.getElementById('assistant-modal');
     if (modal) modal.style.display = 'none';
 }
@@ -441,13 +476,13 @@ function AboutUs() {
         </div>
         
         <div class="card member-card">
-            <img src="https://i.pinimg.com/originals/9f/4c/f0/9f4cf0f24b376077a2fcdab2e85c3584.jpg" onerror="this.src='placeholderimg.jpg'" alt="Clarence Andrei B. Santelices" class="member-image">
+            <img src="placeholderimg.jpg" alt="Clarence Andrei B. Santelices" class="member-image">
             <div class="member-name">SANTELICES, CLARENCE ANDREI B.</div>
             <div class="member-role">${translate('team.research_leader')}</div>
         </div>
 
         <div class="card member-card">
-            <img src="https://i.pinimg.com/originals/9f/4c/f0/9f4cf0f24b376077a2fcdab2e85c3584.jpg" onerror="this.src='placeholderimg.jpg'" alt="Christian Lloyd M. Aragon" class="member-image">
+            <img src="placeholderimg.jpg" alt="Christian Lloyd M. Aragon" class="member-image">
             <div class="member-name">ARAGON, CHRISTIAN LLOYD M.</div>
             <div class="member-role">${translate('team.co_researcher')}</div>
         </div>
@@ -459,7 +494,7 @@ function AboutUs() {
         </div>
 
         <div class="card member-card">
-            <img src="https://i.pinimg.com/originals/9f/4c/f0/9f4cf0f24b376077a2fcdab2e85c3584.jpg" onerror="this.src='placeholderimg.jpg'" alt="Mikeria Angela F. Morondos" class="member-image">
+            <img src="placeholderimg.jpg" alt="Mikeria Angela F. Morondos" class="member-image">
             <div class="member-name">MORONDOS, MIKERIA ANGELA F.</div>
             <div class="member-role">${translate('team.co_researcher')}</div>
         </div>
@@ -563,33 +598,79 @@ function showDirectory() {
 }
 
 function viewNews() {
+    window.currentView = 'news';
     const cardGrid = document.getElementById('card-grid');
 
-    // Check if online
-    const isOnline = navigator.onLine;
+    // Read mode directly from the toggle button's class — always accurate
+    const modeBtn = document.getElementById('mode-toggle-btn');
+    const online = modeBtn ? !modeBtn.classList.contains('mode-offline') : true;
 
     let embedContent = '';
-    if (isOnline) {
+    if (online) {
         embedContent = `
-            <!-- Facebook Page Plugin Iframe -->
-            <!-- Note: Facebook Plugin max width is 500px. We center it here. Sandbox prevents redirection. -->
-            <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FmakatiHS1968%2F&tabs=timeline&width=500&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId" 
-                width="500" 
-                height="500" 
-                style="border:none; overflow:hidden; max-width: 100%;" 
-                scrolling="no" 
-                frameborder="0" 
-                allowfullscreen="true" 
-                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                sandbox="allow-scripts allow-same-origin allow-popups">
-            </iframe>`;
+            <!-- Facebook Page Plugin Iframe (max plugin width is 500px) -->
+            <div style="width:100%; display:flex; justify-content:center; align-items:flex-start; padding:16px 0;">
+                <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FmakatiHS1968%2F&tabs=timeline&width=500&height=700&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId"
+                    width="500"
+                    height="700"
+                    style="border:none; display:block; border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.15);"
+                    scrolling="yes"
+                    frameborder="0"
+                    allowfullscreen="true"
+                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                    sandbox="allow-scripts allow-same-origin allow-popups">
+                </iframe>
+            </div>`;
     } else {
         embedContent = `
-            <div style="padding: 40px; text-align: center; color: #666;">
-                <div style="font-size: 3rem; margin-bottom: 20px;">📡</div>
-                <h3 style="color: #e74c3c; margin-bottom: 10px;">Offline Mode</h3>
-                <p style="margin-bottom: 10px;">The News section requires an internet connection.</p>
-                <p style="font-size: 0.9rem;">Please connect to the internet to view the latest updates from Makati High School.</p>
+            <div style="width:100%; padding: 10px 0;">
+                <!-- Offline notice banner -->
+                <div style="
+                    background: linear-gradient(135deg, #2c3e50, #4ca1af);
+                    color: white; border-radius: 10px; padding: 14px 20px;
+                    display: flex; align-items: center; gap: 14px;
+                    margin-bottom: 20px; font-size: 0.9rem;
+                ">
+                    <span style="font-size:1.8rem;">📵</span>
+                    <span>You're in <strong>Offline Mode</strong>. Showing saved highlights — switch to Online for the live feed.</span>
+                </div>
+
+                <!-- Placeholder news cards using local images -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px;">
+
+                    <div style="background:white; border-radius:12px; overflow:hidden; box-shadow:0 3px 12px rgba(0,0,0,0.1);">
+                        <img src="589431807_815813444550227_3889086255111213921_n.jpg"
+                             onerror="this.src='placeholderimg.jpg'"
+                             alt="MHS Event" style="width:100%; height:160px; object-fit:cover;">
+                        <div style="padding:14px;">
+                            <span style="font-size:0.75rem; color:#4ca1af; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">School Event</span>
+                            <h4 style="margin:6px 0 6px; color:#2c3e50; font-size:0.95rem;">Makati High School Highlights</h4>
+                            <p style="font-size:0.82rem; color:#666; margin:0; line-height:1.5;">Celebrating milestones and achievements at MHS. Follow the official Facebook page for the latest updates.</p>
+                        </div>
+                    </div>
+
+                    <div style="background:white; border-radius:12px; overflow:hidden; box-shadow:0 3px 12px rgba(0,0,0,0.1);">
+                        <img src="589285849_1378908313740486_2189791204943876101_n.jpg"
+                             onerror="this.src='placeholderimg.jpg'"
+                             alt="MHS News" style="width:100%; height:160px; object-fit:cover;">
+                        <div style="padding:14px;">
+                            <span style="font-size:0.75rem; color:#4ca1af; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Campus News</span>
+                            <h4 style="margin:6px 0 6px; color:#2c3e50; font-size:0.95rem;">Campus Life &amp; Activities</h4>
+                            <p style="font-size:0.82rem; color:#666; margin:0; line-height:1.5;">Stay connected with the MHS community. Visit <strong>facebook.com/makatiHS1968</strong> when online for more.</p>
+                        </div>
+                    </div>
+
+                    <div style="background:white; border-radius:12px; overflow:hidden; box-shadow:0 3px 12px rgba(0,0,0,0.1);">
+                        <img src="placeholderimg.jpg"
+                             alt="More News" style="width:100%; height:160px; object-fit:cover;">
+                        <div style="padding:14px;">
+                            <span style="font-size:0.75rem; color:#4ca1af; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Announcements</span>
+                            <h4 style="margin:6px 0 6px; color:#2c3e50; font-size:0.95rem;">Fourth Quarter Updates</h4>
+                            <p style="font-size:0.82rem; color:#666; margin:0; line-height:1.5;">Fourth Quarter Exams: <strong>March 19–20, 2026</strong>. End-of-School-Year Rites: <strong>March 30–31, 2026</strong>.</p>
+                        </div>
+                    </div>
+
+                </div>
             </div>`;
     }
 
@@ -599,7 +680,7 @@ function viewNews() {
             <p>Stay updated with our latest social media posts</p>
         </div>
 
-        <div class="card" style="grid-column: 1 / -1; display: flex; justify-content: center; overflow: hidden;">
+        <div class="card" style="grid-column: 1 / -1; padding: 0; overflow: hidden;">
             ${embedContent}
             
             <div style="margin-top: 20px; text-align: center; color: #666; font-size: 0.9rem; width: 100%; display: none;">
@@ -1837,55 +1918,7 @@ function getDefaultAnnouncements() {
     ];
 }
 
-function viewEvents() {
-    const cardGrid = document.getElementById('card-grid');
-    // Try to get from local storage or use default
-    let events = [];
-    try {
-        const stored = localStorage.getItem('kiosk_events');
-        if (stored) events = JSON.parse(stored);
-    } catch (e) { console.error(e); }
 
-    if (events.length === 0) events = getDefaultEvents();
-
-    let cardsHtml = '';
-    events.forEach(ev => {
-        cardsHtml += `
-            <div class="card" style="padding:0; overflow:hidden;">
-                <div style="height:140px; background:#eee; position:relative;">
-                     <img src="${ev.img || 'placeholderimg.jpg'}" onerror="this.src='placeholderimg.jpg'" style="width:100%; height:100%; object-fit:cover;">
-                     <span style="position:absolute; top:10px; right:10px; background:#e74c3c; color:white; padding:3px 8px; border-radius:4px; font-size:0.75rem;">
-                        ${ev.tag || 'Event'}
-                     </span>
-                </div>
-                <div style="padding:15px;">
-                    <span style="color:#e67e22; font-size:0.85rem; font-weight:bold;">${ev.date}</span>
-                    <h4 style="margin:5px 0; color:#2c3e50;">${ev.title}</h4>
-                    <p style="color:#666; font-size:0.9rem; line-height:1.4;">${ev.desc}</p>
-                </div>
-            </div>
-        `;
-    });
-
-    cardGrid.innerHTML = `
-        <div class="card" style="grid-column: 1 / -1; display:flex; align-items:center; gap:15px; background:linear-gradient(to right, #e67e22, #d35400); color:white;">
-            <button onclick="window.history.back(); location.reload();" style="background:rgba(255,255,255,0.2); border:none; color:white; padding:10px 15px; border-radius:5px; cursor:pointer; font-size:1rem;">
-                <i class="fas fa-arrow-left"></i> Back
-            </button>
-            <h3 style="margin:0; border:none; color:white;">📅 Upcoming Events</h3>
-        </div>
-        <div style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
-            ${cardsHtml}
-        </div>
-    `;
-
-    const modal = document.getElementById('assistant-modal');
-    if (modal) modal.style.display = 'none';
-}
-
-function viewNews() {
-    readAnnouncements();
-}
 
 function readAnnouncements() {
     const cardGrid = document.getElementById('card-grid');

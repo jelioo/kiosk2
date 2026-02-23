@@ -1177,6 +1177,55 @@
             font-size: 1.1rem;
         }
 
+        /* Header controls wrapper (groups lang + mode toggles) */
+        .header-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Override lang-toggle positioning when inside header-controls */
+        .header-controls .lang-toggle {
+            position: static;
+        }
+
+        /* Online / Offline Mode Toggle Button */
+        .mode-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 25px;
+            padding: 8px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            white-space: nowrap;
+        }
+
+        .mode-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Offline state: red tinted */
+        .mode-toggle.mode-offline {
+            background: rgba(231, 76, 60, 0.35);
+            border-color: rgba(231, 76, 60, 0.7);
+        }
+
+        .mode-toggle.mode-offline:hover {
+            background: rgba(231, 76, 60, 0.5);
+        }
+
         /* TTS Controls */
         .tts-controls {
             display: flex;
@@ -1235,4 +1284,207 @@
 
         .tts-btn.stop {
             background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        /* ==============================
+           ANIMATED INTRO TUTORIAL STYLES
+           ============================== */
+
+        .intro-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 20, 40, 0.82);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: introFadeIn 0.5s ease forwards;
+        }
+
+        .intro-overlay.intro-fade-out {
+            animation: introFadeOut 0.6s ease forwards;
+        }
+
+        @keyframes introFadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes introFadeOut {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
+        .intro-card {
+            background: linear-gradient(145deg, #ffffff, #f0f7ff);
+            border-radius: 24px;
+            padding: 36px 40px 28px;
+            max-width: 600px;
+            width: 92%;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.45);
+            animation: introCardSlide 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes introCardSlide {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.96);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .intro-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .intro-logo {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            animation: introBounce 1.2s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes introBounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .intro-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1a2c45;
+            margin: 6px 0 4px;
+        }
+
+        .intro-subtitle {
+            font-size: 0.97rem;
+            color: #5a7080;
+        }
+
+        .intro-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        .intro-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            background: white;
+            border-radius: 14px;
+            padding: 14px 18px;
+            box-shadow: 0 3px 12px rgba(44, 62, 80, 0.08);
+            border-left: 4px solid #4ca1af;
+            opacity: 0;
+            transform: translateX(-24px);
+            transition: opacity 0.45s ease, transform 0.45s ease;
+        }
+
+        .intro-step.intro-step-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .intro-step:hover {
+            transform: translateX(4px);
+            box-shadow: 0 6px 20px rgba(76, 161, 175, 0.18);
+        }
+
+        .intro-step-icon {
+            font-size: 1.85rem;
+            line-height: 1;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .intro-step-body {
+            flex: 1;
+        }
+
+        .intro-step-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 3px;
+        }
+
+        .intro-step-desc {
+            font-size: 0.87rem;
+            color: #5a7080;
+            line-height: 1.5;
+        }
+
+        .intro-footer {
+            text-align: center;
+        }
+
+        .intro-btn {
+            background: linear-gradient(135deg, #4ca1af, #2c3e50);
+            color: white;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border: none;
+            padding: 14px 36px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 6px 20px rgba(76, 161, 175, 0.4);
+            letter-spacing: 0.3px;
+        }
+
+        .intro-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 28px rgba(76, 161, 175, 0.55);
+        }
+
+        .intro-btn:active {
+            transform: translateY(0);
+        }
+
+        .intro-note {
+            font-size: 0.76rem;
+            color: #a0aeba;
+            margin-top: 12px;
+        }
+
+        @media (max-width: 480px) {
+            .intro-card {
+                padding: 24px 20px 20px;
+            }
+
+            .intro-title {
+                font-size: 1.25rem;
+            }
+
+            .intro-step {
+                padding: 12px 14px;
+            }
         }

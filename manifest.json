@@ -1,0 +1,28 @@
+{
+    "name": "MHS Smart Kiosk",
+    "short_name": "MHS Kiosk",
+    "description": "Makati High School Smart Navigation & Information Kiosk",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#2c3e50",
+    "theme_color": "#4ca1af",
+    "orientation": "landscape",
+    "icons": [
+        {
+            "src": "./Intelliguide.jpg",
+            "sizes": "192x192",
+            "type": "image/jpeg",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "./Intelliguide.jpg",
+            "sizes": "512x512",
+            "type": "image/jpeg",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": [
+        "education",
+        "utilities"
+    ]
+}

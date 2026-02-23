@@ -1,0 +1,24 @@
+{
+    "events": [
+        {
+            "title": "Fourth Quarter Exams",
+            "date": "March 19-20, 2026"
+        },
+        {
+            "title": "End-of-School-Year Rites",
+            "date": "March 30-31, 2026"
+        },
+        {
+            "title": "Parent-Teacher Conference",
+            "date": "After Quarter Exams"
+        }
+    ],
+    "announcements": [
+        "Fourth Quarter Exams scheduled for March 19 and 20, 2026",
+        "End-of-School-Year Rites on March 30-31, 2026",
+        "Parent-Teacher Conference after quarterly exams",
+        "Submit all clearance requirements before EOSY Rites",
+        "Report cards will be distributed after quarter exams",
+        "School Year 2025-2026 ends on March 31, 2026"
+    ]
+}
