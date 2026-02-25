@@ -435,18 +435,18 @@ function viewEvents() {
     // Default events — use labelled local placeholder images
     const defaultEvents = [
         {
-            title: 'Science Fair',
-            date: 'Feb 20, 9:00 AM',
+            title: 'NAT Review',
+            date: 'Feb 25, 2026',
             tag: 'Academic',
-            img: 'science_fair placeholder.jpg',
-            desc: 'Annual science fair showcasing student research and innovation projects.'
+            img: '1.png',
+            desc: 'National Achievement Test review sessions for students.'
         },
         {
-            title: 'Basketball Championship',
-            date: 'Feb 25, 3:00 PM',
-            tag: 'Sports',
-            img: 'bball championship placeholder.jpg',
-            desc: 'Interschool basketball championship tournament at the school gymnasium.'
+            title: 'Prototype Exhibition',
+            date: 'March 6, 2026',
+            tag: 'Academic',
+            img: '3.png',
+            desc: 'Showcase of student prototype projects and innovations.'
         },
         {
             title: 'Fourth Quarter Exams',
