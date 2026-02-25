@@ -16,6 +16,40 @@ function navigateRooms() {
     if (modal) modal.style.display = 'none';
 }
 
+// View Schedule function - scrolls to and highlights the schedule card
+function viewSchedule() {
+    // Close the assistant modal first
+    const modal = document.getElementById('assistant-modal');
+    if (modal) modal.style.display = 'none';
+
+    // If we're not on the home page, reload to home first
+    const schedCard = document.getElementById('schedule-card');
+    if (!schedCard) {
+        location.reload();
+        return;
+    }
+
+    // Scroll to schedule card smoothly
+    schedCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Pulse highlight effect
+    schedCard.style.transition = 'box-shadow 0.4s ease';
+    schedCard.style.boxShadow = '0 0 0 4px #4ca1af, 0 10px 30px rgba(76,161,175,0.4)';
+    setTimeout(() => { schedCard.style.boxShadow = ''; }, 1800);
+}
+
+// Switch schedule tab panels
+function switchSchedTab(panel, btn) {
+    // Deactivate all tabs and panels
+    document.querySelectorAll('.sched-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.sched-panel').forEach(p => p.classList.remove('active'));
+
+    // Activate selected
+    btn.classList.add('active');
+    const target = document.getElementById('sched-' + panel);
+    if (target) target.classList.add('active');
+}
+
 function showCampusDirectory() {
     const cardGrid = document.getElementById('card-grid');
     cardGrid.innerHTML = `

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>School Smart Kiosk</title>
-    <link rel="stylesheet" href="assistant.css">
+    <link rel="stylesheet" href="css/assistant.css">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#4ca1af">
@@ -100,133 +100,214 @@
                                 EOSY Rites</li>
                         </ul>
                     </div>
-                    <div class="card" id="directory-card">
-                        <h3><i class="fas fa-map-marked-alt"></i> Campus Directory</h3>
-                        <div class="campus-map-container">
-                            <svg id="campus-map-svg" viewBox="0 0 800 600"
-                                style="width: 100%; height: 350px; cursor: pointer;">
-                                <!-- Background -->
-                                <rect width="800" height="600" fill="#f0f4f8" />
+                    <div class="card schedule-card" id="schedule-card">
+                        <h3><i class="fas fa-calendar-alt"></i> 📌 Class Schedule SY 2025–2026</h3>
 
-                                <!-- Building A (Left side - Cyan/Teal) -->
-                                <g id="building-a" class="building-svg" onclick="viewBuilding('Building A')"
-                                    style="cursor: pointer;">
-                                    <rect x="40" y="200" width="140" height="280" fill="#00bcd4" stroke="#00838f"
-                                        stroke-width="4" rx="5" />
-                                    <!-- Windows -->
-                                    <rect x="55" y="220" width="30" height="35" fill="#b2ebf2" />
-                                    <rect x="95" y="220" width="30" height="35" fill="#b2ebf2" />
-                                    <rect x="135" y="220" width="30" height="35" fill="#b2ebf2" />
-                                    <rect x="55" y="270" width="30" height="35" fill="#b2ebf2" />
-                                    <rect x="95" y="270" width="30" height="35" fill="#b2ebf2" />
-                                    <rect x="135" y="270" width="30" height="35" fill="#b2ebf2" />
-                                    <rect x="55" y="320" width="30" height="35" fill="#b2ebf2" />
-                                    <rect x="95" y="320" width="30" height="35" fill="#b2ebf2" />
-                                    <rect x="135" y="320" width="30" height="35" fill="#b2ebf2" />
-                                    <!-- Door -->
-                                    <rect x="85" y="430" width="50" height="40" fill="#006064" />
-                                    <!-- Label -->
-                                    <text x="110" y="400" text-anchor="middle" fill="white" font-size="32"
-                                        font-weight="bold">A</text>
-                                    <text x="110" y="185" text-anchor="middle" fill="#00838f" font-size="14"
-                                        font-weight="bold">BLDG. A</text>
-                                </g>
-
-                                <!-- Building B (Center-left - Yellow) -->
-                                <g id="building-b" class="building-svg" onclick="viewBuilding('Building B')"
-                                    style="cursor: pointer;">
-                                    <rect x="220" y="240" width="200" height="180" fill="#ffc107" stroke="#f57f17"
-                                        stroke-width="4" rx="5" />
-                                    <!-- Windows -->
-                                    <rect x="235" y="260" width="35" height="30" fill="#fff9c4" />
-                                    <rect x="280" y="260" width="35" height="30" fill="#fff9c4" />
-                                    <rect x="325" y="260" width="35" height="30" fill="#fff9c4" />
-                                    <rect x="370" y="260" width="35" height="30" fill="#fff9c4" />
-                                    <rect x="235" y="305" width="35" height="30" fill="#fff9c4" />
-                                    <rect x="280" y="305" width="35" height="30" fill="#fff9c4" />
-                                    <rect x="325" y="305" width="35" height="30" fill="#fff9c4" />
-                                    <rect x="370" y="305" width="35" height="30" fill="#fff9c4" />
-                                    <!-- Door -->
-                                    <rect x="290" y="370" width="50" height="40" fill="#f57f17" />
-                                    <!-- Label -->
-                                    <text x="320" y="360" text-anchor="middle" fill="white" font-size="32"
-                                        font-weight="bold">B</text>
-                                    <text x="320" y="225" text-anchor="middle" fill="#f57f17" font-size="14"
-                                        font-weight="bold">BLDG. B</text>
-                                </g>
-
-                                <!-- Building C (Top-right - Purple L-shape) -->
-                                <g id="building-c" class="building-svg" onclick="viewBuilding('Building C')"
-                                    style="cursor: pointer;">
-                                    <!-- Vertical part of L -->
-                                    <rect x="550" y="80" width="120" height="320" fill="#9c27b0" stroke="#6a1b9a"
-                                        stroke-width="4" rx="5" />
-                                    <!-- Horizontal part of L -->
-                                    <rect x="450" y="80" width="100" height="140" fill="#9c27b0" stroke="#6a1b9a"
-                                        stroke-width="4" rx="5" />
-                                    <!-- Windows on vertical part -->
-                                    <rect x="565" y="100" width="30" height="30" fill="#e1bee7" />
-                                    <rect x="620" y="100" width="30" height="30" fill="#e1bee7" />
-                                    <rect x="565" y="150" width="30" height="30" fill="#e1bee7" />
-                                    <rect x="620" y="150" width="30" height="30" fill="#e1bee7" />
-                                    <rect x="565" y="200" width="30" height="30" fill="#e1bee7" />
-                                    <rect x="620" y="200" width="30" height="30" fill="#e1bee7" />
-                                    <rect x="565" y="250" width="30" height="30" fill="#e1bee7" />
-                                    <rect x="620" y="250" width="30" height="30" fill="#e1bee7" />
-                                    <!-- Windows on horizontal part -->
-                                    <rect x="465" y="100" width="30" height="30" fill="#e1bee7" />
-                                    <rect x="505" y="100" width="30" height="30" fill="#e1bee7" />
-                                    <rect x="465" y="150" width="30" height="30" fill="#e1bee7" />
-                                    <rect x="505" y="150" width="30" height="30" fill="#e1bee7" />
-                                    <!-- Door -->
-                                    <rect x="585" y="350" width="50" height="40" fill="#6a1b9a" />
-                                    <!-- Label -->
-                                    <text x="610" y="320" text-anchor="middle" fill="white" font-size="32"
-                                        font-weight="bold">C</text>
-                                    <text x="500" y="60" text-anchor="middle" fill="#6a1b9a" font-size="14"
-                                        font-weight="bold">BLDG. C</text>
-                                </g>
-
-                                <!-- Building D (Bottom-center - Red/Brown) -->
-                                <g id="building-d" class="building-svg" onclick="viewBuilding('Building D')"
-                                    style="cursor: pointer;">
-                                    <rect x="280" y="450" width="180" height="110" fill="#d32f2f" stroke="#b71c1c"
-                                        stroke-width="4" rx="5" />
-                                    <!-- Windows -->
-                                    <rect x="295" y="470" width="35" height="30" fill="#ffcdd2" />
-                                    <rect x="340" y="470" width="35" height="30" fill="#ffcdd2" />
-                                    <rect x="385" y="470" width="35" height="30" fill="#ffcdd2" />
-                                    <rect x="430" y="470" width="35" height="30" fill="#ffcdd2" />
-                                    <!-- Door -->
-                                    <rect x="345" y="515" width="50" height="35" fill="#b71c1c" />
-                                    <!-- Label -->
-                                    <text x="370" y="510" text-anchor="middle" fill="white" font-size="28"
-                                        font-weight="bold">D</text>
-                                    <text x="370" y="435" text-anchor="middle" fill="#b71c1c" font-size="14"
-                                        font-weight="bold">BLDG. D</text>
-                                </g>
-
-                                <!-- "YOU ARE HERE" marker -->
-                                <g>
-                                    <circle cx="720" cy="350" r="35" fill="#ff5252" opacity="0.9" />
-                                    <text x="720" y="345" text-anchor="middle" fill="white" font-size="12"
-                                        font-weight="bold">YOU ARE</text>
-                                    <text x="720" y="360" text-anchor="middle" fill="white" font-size="12"
-                                        font-weight="bold">HERE!</text>
-                                </g>
-
-                                <!-- Title -->
-                                <text x="400" y="30" text-anchor="middle" fill="#2c3e50" font-size="22"
-                                    font-weight="bold">MAKATI HIGH SCHOOL - GROUND FLOOR</text>
-                                <text x="400" y="50" text-anchor="middle" fill="#7f8c8d" font-size="12">Click on any
-                                    building to explore</text>
-                            </svg>
+                        <!-- Shift Tabs -->
+                        <div class="sched-tabs">
+                            <button class="sched-tab active" onclick="switchSchedTab('morning', this)">🌅 Morning
+                                Shift</button>
+                            <button class="sched-tab" onclick="switchSchedTab('afternoon', this)">🌇 Afternoon
+                                Shift</button>
+                            <button class="sched-tab" onclick="switchSchedTab('recess', this)">☕ Recess
+                                Schedules</button>
                         </div>
-                        <ul class="directory-list" style="margin-top: 15px;">
-                            <li><span>Building A</span> <span>Classrooms</span></li>
-                            <li><span>Building B</span> <span>Labs & Library</span></li>
-                            <li><span>Building C</span> <span>Admin Offices</span></li>
-                        </ul>
+
+                        <!-- Morning Shift -->
+                        <div class="sched-panel active" id="sched-morning">
+                            <div class="schedule-table-wrap">
+                                <table class="schedule-table animate-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Grade / Section</th>
+                                            <th>Arrival</th>
+                                            <th>Start of Classes</th>
+                                            <th>Dismissal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="row-anim">
+                                            <td><span class="grade-badge grade7">Grade 7</span></td>
+                                            <td>5:30 AM</td>
+                                            <td>5:45 AM</td>
+                                            <td>12:00 NN</td>
+                                        </tr>
+                                        <tr class="row-anim">
+                                            <td><span class="grade-badge grade10">Grade 10</span></td>
+                                            <td>5:30 AM</td>
+                                            <td>6:00 AM</td>
+                                            <td>12:30 PM</td>
+                                        </tr>
+                                        <tr class="row-anim">
+                                            <td><span class="grade-badge grade11">Grade 11</span></td>
+                                            <td>5:45 AM</td>
+                                            <td>6:00 AM</td>
+                                            <td>12:30 PM</td>
+                                        </tr>
+                                        <tr class="row-anim">
+                                            <td><span class="grade-badge gradeste">STE (Grades 7 &amp; 8)</span></td>
+                                            <td>6:15 AM</td>
+                                            <td>6:30 AM</td>
+                                            <td><span class="multi-dismiss">MW: 4:15 PM<br>TThF: 3:35 PM</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Afternoon Shift -->
+                        <div class="sched-panel" id="sched-afternoon">
+                            <div class="schedule-table-wrap">
+                                <table class="schedule-table animate-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Grade / Section</th>
+                                            <th>Arrival</th>
+                                            <th>Start of Classes</th>
+                                            <th>Dismissal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="row-anim">
+                                            <td><span class="grade-badge grade8">Grade 8</span></td>
+                                            <td>12:00 NN</td>
+                                            <td>12:30 PM</td>
+                                            <td>7:00 PM</td>
+                                        </tr>
+                                        <tr class="row-anim">
+                                            <td><span class="grade-badge grade9">Grade 9</span></td>
+                                            <td>12:00 NN</td>
+                                            <td>1:00 PM</td>
+                                            <td>7:00 PM</td>
+                                        </tr>
+                                        <tr class="row-anim">
+                                            <td><span class="grade-badge grade12">Grade 12</span></td>
+                                            <td>12:30 PM</td>
+                                            <td>1:00 PM</td>
+                                            <td>7:15 PM</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Recess Schedules -->
+                        <div class="sched-panel" id="sched-recess">
+                            <div class="recess-grid">
+
+                                <!-- Grade 7 Recess -->
+                                <div class="recess-block">
+                                    <div class="recess-grade-header">🟢 Grade 7</div>
+                                    <table class="schedule-table animate-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Time</th>
+                                                <th>Sections</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="row-anim">
+                                                <td>8:00 – 8:15</td>
+                                                <td>Masigasig, Masikap, Masikhay, Masinop, Masipag, Masunurin, Matapat,
+                                                    Matatag, Matulungin</td>
+                                            </tr>
+                                            <tr class="row-anim">
+                                                <td>8:45 – 9:00</td>
+                                                <td>Mabait, Magalang, Makabansa, MakaDiyos, Makakalikasan, Makatao,
+                                                    Malikhaing, Mapagmahal</td>
+                                            </tr>
+                                            <tr class="row-anim">
+                                                <td>9:30 – 9:45</td>
+                                                <td>Josette T. Biyo (STE), Fe V. Del Mundo (STE), Maaasahan, Maagap</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Grade 8 Recess -->
+                                <div class="recess-block">
+                                    <div class="recess-grade-header">🟢 Grade 8</div>
+                                    <table class="schedule-table animate-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Time</th>
+                                                <th>Sections</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="row-anim">
+                                                <td>9:05 – 9:20</td>
+                                                <td>Gregorio Y. Zara (STE), Eduardo A. Quisumbing (STE)</td>
+                                            </tr>
+                                            <tr class="row-anim">
+                                                <td>3:00 – 3:15</td>
+                                                <td>Gumamela, Ilang-Ilang, Jasmine, Lirio, Orchid, Rosal, Sampaguita,
+                                                    Santan, Sunflower</td>
+                                            </tr>
+                                            <tr class="row-anim">
+                                                <td>3:45 – 4:00</td>
+                                                <td>Amapola, Anthurium, Bougainvillea, Camia, Carnation, Daffodil,
+                                                    Dahlia, Daisy, Everlasting, Gladiola</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Grade 9 Recess -->
+                                <div class="recess-block">
+                                    <div class="recess-grade-header">🟢 Grade 9</div>
+                                    <table class="schedule-table animate-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Time</th>
+                                                <th>Sections</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="row-anim">
+                                                <td>3:00 – 3:15</td>
+                                                <td>Alexandrite, Amber, Amethyst, Aquamarine, Beryl, Diamond, Emerald,
+                                                    Quartz, Ruby, Sapphire, Sunstone, Zircon</td>
+                                            </tr>
+                                            <tr class="row-anim">
+                                                <td>3:45 – 4:00</td>
+                                                <td>Garnet, Gold, Gypsum, Jade, Onyx, Pearl, Pyrite</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Grade 10 Recess -->
+                                <div class="recess-block">
+                                    <div class="recess-grade-header">🟢 Grade 10</div>
+                                    <table class="schedule-table animate-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Time</th>
+                                                <th>Sections</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="row-anim">
+                                                <td>8:00 – 8:15</td>
+                                                <td>A. Luna, A. Mabini, J. Rizal, G. Silang, Father Zamora</td>
+                                            </tr>
+                                            <tr class="row-anim">
+                                                <td>8:45 – 9:00</td>
+                                                <td>G. Del Pilar, J.L. Escoda, Father Gomez, E. Jacinto, G.L. Jaena, S.
+                                                    Kudarat, Lapu-Lapu</td>
+                                            </tr>
+                                            <tr class="row-anim">
+                                                <td>9:30 – 9:45</td>
+                                                <td>J. Abad Santos, T. Agoncillo, E. Aguinaldo, M. Aquino, A. Bonifacio,
+                                                    Father Burgos</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -285,9 +366,8 @@
             <h3 data-translate="assistant.title">School Assistant</h3>
             <p id="assistant-greeting" class="typing" data-translate="assistant.greeting">How can I help you today?</p>
             <div class="assistant-buttons">
-                <button class="assistant-btn flash" id="navigate-btn" onclick="navigateRooms()"><i
-                        class="fas fa-route"></i> <span data-translate="assistant.navigate">Navigate
-                        Rooms</span></button>
+                <button class="assistant-btn flash" id="schedule-btn" onclick="viewSchedule()"><i
+                        class="fas fa-clock"></i> <span>View Schedule</span></button>
                 <button class="assistant-btn flash" id="events-btn" onclick="viewEvents()"><i
                         class="fas fa-calendar-day"></i> <span data-translate="assistant.events">View
                         Events</span></button>

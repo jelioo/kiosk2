@@ -1488,3 +1488,183 @@
                 padding: 12px 14px;
             }
         }
+
+        /* ========== SCHEDULE SECTION STYLES ========== */
+
+        .fa-clock::before { content: "🕐"; }
+
+        .schedule-card {
+            grid-column: 1 / -1;
+        }
+
+        /* Tab buttons */
+        .sched-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .sched-tab {
+            padding: 9px 18px;
+            border: 2px solid #4ca1af;
+            background: transparent;
+            color: #2c3e50;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.92rem;
+            font-weight: 600;
+            transition: all 0.28s ease;
+        }
+
+        .sched-tab:hover {
+            background: #e8f7f9;
+            transform: translateY(-2px);
+        }
+
+        .sched-tab.active {
+            background: linear-gradient(135deg, #4ca1af, #2c3e50);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(76, 161, 175, 0.4);
+        }
+
+        /* Panels */
+        .sched-panel {
+            display: none;
+            animation: fadeInUp 0.4s ease;
+        }
+
+        .sched-panel.active {
+            display: block;
+        }
+
+        /* Table wrapper with scroll */
+        .schedule-table-wrap {
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        /* Animated Table */
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.93rem;
+        }
+
+        .schedule-table thead th {
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+
+        .schedule-table thead th:first-child { border-radius: 10px 0 0 0; }
+        .schedule-table thead th:last-child  { border-radius: 0 10px 0 0; }
+
+        .schedule-table tbody tr {
+            border-bottom: 1px solid #eef2f5;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .schedule-table tbody tr:last-child { border-bottom: none; }
+
+        .schedule-table tbody tr:hover {
+            background: #e8f7f9;
+            transform: scale(1.01);
+        }
+
+        .schedule-table tbody td {
+            padding: 11px 15px;
+            color: #444;
+            vertical-align: middle;
+        }
+
+        /* Row entry animation */
+        @keyframes rowSlideIn {
+            from { opacity: 0; transform: translateX(-18px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        .row-anim {
+            animation: rowSlideIn 0.5s ease backwards;
+        }
+
+        .schedule-table tbody tr:nth-child(1).row-anim { animation-delay: 0.05s; }
+        .schedule-table tbody tr:nth-child(2).row-anim { animation-delay: 0.13s; }
+        .schedule-table tbody tr:nth-child(3).row-anim { animation-delay: 0.21s; }
+        .schedule-table tbody tr:nth-child(4).row-anim { animation-delay: 0.29s; }
+        .schedule-table tbody tr:nth-child(5).row-anim { animation-delay: 0.37s; }
+
+        /* Alternating row color */
+        .schedule-table tbody tr:nth-child(even) {
+            background: #f7fbfc;
+        }
+
+        /* Grade badges */
+        .grade-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: white;
+            white-space: nowrap;
+        }
+
+        .grade7  { background: linear-gradient(135deg, #11998e, #38ef7d); color: #1a1a1a; }
+        .grade8  { background: linear-gradient(135deg, #f7971e, #ffd200); color: #1a1a1a; }
+        .grade9  { background: linear-gradient(135deg, #ee0979, #ff6a00); }
+        .grade10 { background: linear-gradient(135deg, #2193b0, #6dd5ed); color: #1a1a1a; }
+        .grade11 { background: linear-gradient(135deg, #642b73, #c6426e); }
+        .grade12 { background: linear-gradient(135deg, #1a1a2e, #16213e); }
+        .gradeste { background: linear-gradient(135deg, #134e5e, #71b280); }
+
+        .multi-dismiss {
+            font-size: 0.88rem;
+            color: #555;
+            line-height: 1.7;
+        }
+
+        /* Recess grid */
+        .recess-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .recess-block {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        .recess-grade-header {
+            background: linear-gradient(135deg, #155724, #28a745);
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 10px 15px;
+        }
+
+        .recess-block .schedule-table thead th {
+            background: linear-gradient(135deg, #1e7e34, #28a745);
+            font-size: 0.85rem;
+            padding: 9px 12px;
+        }
+
+        .recess-block .schedule-table td {
+            font-size: 0.85rem;
+            padding: 9px 12px;
+        }
+
+        @media screen and (max-width: 768px) {
+            .sched-tabs { gap: 6px; }
+            .sched-tab  { padding: 8px 13px; font-size: 0.85rem; }
+            .schedule-table { font-size: 0.82rem; }
+            .recess-grid { grid-template-columns: 1fr; }
+        }
+        /* ========== END SCHEDULE STYLES ========== */
