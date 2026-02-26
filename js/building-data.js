@@ -14,10 +14,10 @@
                     textDirections: [
                         "Start at the Main Kiosk near the gate.",
                         "Walk straight ahead towards the quadrangle.",
-                        "Turn towards Building A, coming from your right.",
+                        "Turn towards Building A, coming from your right",
                         "Proceed to the designated floor.",
-                        "Turn right at the corner.",
-                        "Walk until you reach the Stockroom or \"Room 101\"."
+                        "Turn to the right after reaching the turning point.",
+                        "Continue walking until you have reached the Stock Room or \"Room 101\""
                     ]
                 },
                 {
@@ -28,7 +28,7 @@
                     textDirections: [
                         "Start at the Main Kiosk near the gate.",
                         "Walk straight ahead towards the quadrangle.",
-                        "Turn towards Building A, coming from your right.",
+                        "Turn towards Building A, coming from your right",
                         "Proceed to the designated floor.",
                         "Turn to the right after reaching the turning point.",
                         "Continue walking until you have reached the Standard Classroom or \"Room 102.\""
@@ -42,7 +42,7 @@
                     textDirections: [
                         "Start at the Main Kiosk near the gate.",
                         "Walk straight ahead towards the quadrangle.",
-                        "Turn towards Building A, coming from your right.",
+                        "Turn towards Building A, coming from your right",
                         "Proceed to the designated floor.",
                         "Turn to the right after reaching the turning point.",
                         "Continue walking until you have reached the Standard Classroom or \"Room 103.\""
@@ -56,7 +56,7 @@
                     textDirections: [
                         "Start at the Main Kiosk near the gate.",
                         "Walk straight ahead towards the quadrangle.",
-                        "Turn towards Building A, coming from your right.",
+                        "Turn towards Building A, coming from your right",
                         "Proceed to the designated floor.",
                         "Turn to your left, and you have arrived at the backstage door."
                     ]
@@ -69,7 +69,7 @@
                     textDirections: [
                         "Start at the Main Kiosk near the gate.",
                         "Walk straight ahead towards the quadrangle.",
-                        "Turn towards Building A, coming from your right.",
+                        "Turn towards Building A, coming from your right",
                         "Proceed to the designated floor.",
                         "Turn to the right after reaching the turning point.",
                         "Continue walking until you have reached the end then turn left."
@@ -85,12 +85,13 @@
                     textDirections: [
                         "Start at the Main Kiosk near the gate.",
                         "Walk straight ahead towards the quadrangle.",
-                        "Turn towards Building A, coming from your right.",
+                        "Turn towards Building A, coming from your right",
                         "Proceed to the designated floor.",
                         "Turn to the right after reaching the turning point.",
                         "Continue walking until you have reached the main Staircase.",
                         "Continue going up until you have reached the second floor.",
-                        "Turn to your right and walk until the end. You have reached the Classroom or \"Room 201.\""
+                        "Turn to your right and walk until the end.",
+                        "You have reached the Classroom or \"Room 201.\""
                     ]
                 },
                 {
@@ -101,7 +102,7 @@
                     textDirections: [
                         "Start at the Main Kiosk near the gate.",
                         "Walk straight ahead towards the quadrangle.",
-                        "Turn towards Building A, coming from your right.",
+                        "Turn towards Building A, coming from your right",
                         "Proceed to the designated floor.",
                         "Turn to the right after reaching the turning point.",
                         "Continue walking until you have reached the main Staircase.",
@@ -117,7 +118,7 @@
                     textDirections: [
                         "Start at the Main Kiosk near the gate.",
                         "Walk straight ahead towards the quadrangle.",
-                        "Turn towards Building A, coming from your right.",
+                        "Turn towards Building A, coming from your right",
                         "Proceed to the designated floor.",
                         "Turn to the right after reaching the turning point.",
                         "Continue walking until you have reached the main Staircase.",
@@ -133,7 +134,7 @@
                     textDirections: [
                         "Start at the Main Kiosk near the gate.",
                         "Walk straight ahead towards the quadrangle.",
-                        "Turn towards Building A, coming from your right.",
+                        "Turn towards Building A, coming from your right",
                         "Proceed to the designated floor.",
                         "Turn to the right after reaching the turning point.",
                         "Continue walking until you have reached the main Staircase.",
@@ -149,7 +150,7 @@
                     textDirections: [
                         "Start at the Main Kiosk near the gate.",
                         "Walk straight ahead towards the quadrangle.",
-                        "Turn towards Building A, coming from your right.",
+                        "Turn towards Building A, coming from your right",
                         "Proceed to the designated floor.",
                         "Turn to the right after reaching the turning point.",
                         "Continue walking until you have reached the main Staircase.",
@@ -165,7 +166,7 @@
                     textDirections: [
                         "Start at the Main Kiosk near the gate.",
                         "Walk straight ahead towards the quadrangle.",
-                        "Turn towards Building A, coming from your right.",
+                        "Turn towards Building A, coming from your right",
                         "Proceed to the designated floor.",
                         "Turn to the right after reaching the turning point.",
                         "Continue walking until you have reached the main Staircase.",
@@ -237,8 +238,8 @@
                     directions: 'Building B - 1st Floor Medical Clinic Directions.jpg',
                     textDirections: [
                         "Start at the Main Kiosk near the gate.",
-                        "Walk to your right, then turn left at the end.",
-                        "Walk until you reach the \"School Clinic.\""
+                        "Walk to your right, then turn left after reaching the end.",
+                        "Walk until you have reached the \"School Clinic.\""
                     ]
                 },
                 {
@@ -258,8 +259,8 @@
                     directions: 'Building B - 1st Floor Dental Office Directions.jpg',
                     textDirections: [
                         "Start at the Main Kiosk near the gate.",
-                        "Walk to your right, then turn left at the end.",
-                        "Walk until you reach the \"Dental Clinic.\""
+                        "Walk to your right, then turn left after reaching the end.",
+                        "Walk until you have reached the \"Dental Clinic.\""
                     ]
                 },
                 {
@@ -421,15 +422,116 @@
         },
         floorData: {
             1: [
-                { label: 'Room 101', desc: 'Cookery Laboratory 9', img: 'Building C 1F 101.jpg', directions: 'Building C - 1st Floor Cookery Lab (Room 101) Directions.jpg' },
-                { label: 'Room 105', desc: 'TVL - FBS Room', img: 'Building C 1F 105 TVL - FBS Room.jpg', directions: 'Building C - 1st Floor TVL-FBS Room Directions.jpg' },
-                { label: 'Room 106', desc: 'Cookery Laboratory', img: 'Building C 1F 106 Cookery Laboratory.jpg', directions: 'Building C - 1st Floor Cookery Laboratory Directions.jpg' },
-                { label: 'JHS Guidance Office', desc: 'JHS Guidance Office', img: 'Building C 1F JHS Guidance Office.jpg', directions: 'Building C - 1st Floor JHS Guidance Office Directions.jpg' },
-                { label: 'SHS Guidance Office', desc: 'SHS Guidance Office', img: 'Building C 1F SHS Guidance Office.jpg', directions: 'Building C - 1st Floor SHS Guidance Office Directions.jpg' },
-                { label: 'Restrooms', desc: 'Comfort Rooms', img: 'Building C 1F Restrooms.jpg', directions: 'Building C - 1st Floor Restroom Directions.jpg' },
-                { label: 'Garden Area 1', desc: 'Outdoor Garden', img: 'Bldg. A,B,C Garden.jpg', directions: 'Building C - 1st Floor Teen Center Directions.jpg' },
-                { label: 'Garden Area 2', desc: 'Outdoor Garden', img: 'Bldg. A,B,C Garden 2.jpg', directions: 'Building C - 1st Floor Teen Center Directions.jpg' },
-                { label: 'Reading Park', desc: 'School Reading Park', img: 'Bldg. C, D School Reading Park.jpg', directions: 'Building C - 1st Floor Teen Center Directions.jpg' }
+                {
+                    label: 'Room 101',
+                    desc: 'Cookery Laboratory 9',
+                    img: 'Building C 1F 101.jpg',
+                    directions: 'Building C - 1st Floor Cookery Lab (Room 101) Directions.jpg',
+                    textDirections: [
+                        "Start at the kiosk near the gate.",
+                        "Walk straight ahead toward the quadrangle.",
+                        "Turn toward Building C.",
+                        "Go straight until you reach the restrooms.",
+                        "After reaching the restrooms, turn left.",
+                        "Walk straight until you reach Cookery Lab 9 (Room 101)."
+                    ]
+                },
+                {
+                    label: 'Room 105',
+                    desc: 'TVL - FBS Room',
+                    img: 'Building C 1F 105 TVL - FBS Room.jpg',
+                    directions: 'Building C - 1st Floor TVL-FBS Room Directions.jpg',
+                    textDirections: [
+                        "Start at the kiosk near the gate.",
+                        "Walk straight ahead toward the quadrangle.",
+                        "Turn toward Building C.",
+                        "Walk straight until you see the TVL room on the right corner.",
+                        "You will see Room 105."
+                    ]
+                },
+                {
+                    label: 'Room 106',
+                    desc: 'Cookery Laboratory',
+                    img: 'Building C 1F 106 Cookery Laboratory.jpg',
+                    directions: 'Building C - 1st Floor Cookery Laboratory Directions.jpg',
+                    textDirections: [
+                        "Start at the main kiosk near the gate.",
+                        "Walk straight ahead toward the quadrangle.",
+                        "Turn toward Building C.",
+                        "Walk straight until you see the Cookery Lab (Room 106) on the right corner."
+                    ]
+                },
+                {
+                    label: 'JHS Guidance Office',
+                    desc: 'JHS Guidance Office',
+                    img: 'Building C 1F JHS Guidance Office.jpg',
+                    directions: 'Building C - 1st Floor JHS Guidance Office Directions.jpg',
+                    textDirections: [
+                        "Start at the main kiosk near the gate.",
+                        "Walk straight ahead toward the quadrangle.",
+                        "Turn toward Building C.",
+                        "Walk straight ahead until you reach the JHS Guidance Office on the right corner."
+                    ]
+                },
+                {
+                    label: 'SHS Guidance Office',
+                    desc: 'SHS Guidance Office',
+                    img: 'Building C 1F SHS Guidance Office.jpg',
+                    directions: 'Building C - 1st Floor SHS Guidance Office Directions.jpg',
+                    textDirections: [
+                        "Start at the main kiosk near the gate.",
+                        "Walk straight ahead toward the quadrangle.",
+                        "Turn toward Building C.",
+                        "Walk straight ahead until you see the label “Guidance Office” on the right corner.",
+                        "Walk a little past the JHS Guidance Office to reach the SHS Guidance Office."
+                    ]
+                },
+                {
+                    label: 'Restrooms',
+                    desc: 'Comfort Rooms',
+                    img: 'Building C 1F Restrooms.jpg',
+                    directions: 'Building C - 1st Floor Restroom Directions.jpg',
+                    textDirections: [
+                        "Start at the main kiosk near the gate.",
+                        "Walk straight ahead toward the quadrangle.",
+                        "Turn toward Building C.",
+                        "Walk straight ahead until you reach the restrooms at the end of the building."
+                    ]
+                },
+                {
+                    label: 'Garden Area 1',
+                    desc: 'Outdoor Garden',
+                    img: 'Bldg. A,B,C Garden.jpg',
+                    directions: 'Building C - 1st Floor Teen Center Directions.jpg',
+                    textDirections: [
+                        "Start at the main kiosk near the gate.",
+                        "Walk straight ahead toward the quadrangle.",
+                        "Turn toward Building C.",
+                        "Walk straight ahead until you reach the turning point.",
+                        "Turn left and walk straight ahead.",
+                        "You will see the stairs going down to Garden Area 1."
+                    ]
+                },
+                {
+                    label: 'Garden Area 2',
+                    desc: 'Outdoor Garden',
+                    img: 'Bldg. A,B,C Garden 2.jpg',
+                    directions: 'Building C - 1st Floor Teen Center Directions.jpg',
+                    textDirections: [
+                        "Start at the main kiosk near the gate.",
+                        "Walk straight ahead toward the quadrangle.",
+                        "Turn toward Building C.",
+                        "Walk straight ahead until you reach the turning point.",
+                        "Turn left and walk straight ahead to the stairs going down to Garden Area 1.",
+                        "From Garden Area 1, turn right to reach Garden Area 2."
+                    ]
+                },
+                {
+                    label: 'Reading Park',
+                    desc: 'School Reading Park',
+                    img: 'Bldg. C, D School Reading Park.jpg',
+                    directions: 'Building C - 1st Floor Teen Center Directions.jpg'
+                }
             ],
             2: [
                 { label: 'Room 201', desc: 'SHS Computer Lab', img: 'Building C 2F 201 SHS Computer Lab.jpg', directions: 'Building C - 2nd Floor Computer Laboratory (Room 201 - 202) Directions.jpg' },
@@ -495,7 +597,7 @@
                         "Walk straight ahead toward the quadrangle.",
                         "Walk toward Building D.",
                         "Go to the right corner where the stairs are located.",
-                        "Turn left and walk straight.",
+                        "Turn left and walk straight ahead.",
                         "Turn right to reach the girls’ restroom."
                     ]
                 },

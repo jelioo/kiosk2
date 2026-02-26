@@ -1,4 +1,4 @@
-﻿// Global Constants
+// Global Constants
 const REFRESH_TIME = 600000; // 10 minutes auto-refresh
 const RATING_TIME = 180000;  // 3 minutes before rating prompt
 
@@ -138,6 +138,21 @@ function viewBuilding(buildingName) {
     if (modal) modal.style.display = 'none';
 }
 
+// Helper: when user clicks a room card from the directory, show its full details with correct label, img, and directions
+function viewRoomFromDirectory(el) {
+    const buildingName = el.dataset.building;
+    const floor = el.dataset.floor;
+    const roomIndex = parseInt(el.dataset.roomIndex, 10);
+    if (!buildingName || floor === undefined || isNaN(roomIndex)) return;
+    const bData = buildingImages[buildingName];
+    if (!bData || !bData.floorData || !bData.floorData[floor]) return;
+    const roomList = bData.floorData[floor];
+    const room = roomList[roomIndex];
+    if (!room) return;
+    room.floor = floor;
+    viewSpecificRoom(buildingName, room.label, room);
+}
+
 function viewFloor(buildingName, floor) {
     const cardGrid = document.getElementById('card-grid');
     const bData = buildingImages[buildingName];
@@ -151,14 +166,11 @@ function viewFloor(buildingName, floor) {
     const roomList = bData.floorData && bData.floorData[floor] ? bData.floorData[floor] : [];
 
     let roomsHtml = '';
-    roomList.forEach(room => {
-        // Safe label for onclick
-        const safeLabel = room.label.replace(/'/g, "\\'");
-        // Use mapped room image or fallback
+    roomList.forEach((room, index) => {
         const roomImg = room.img || 'placeholderimg.jpg';
 
         roomsHtml += `
-            <div class="card" onclick="viewSpecificRoom('${buildingName}', '${safeLabel}', null)" style="cursor: pointer; padding: 0; overflow: hidden; transition: transform 0.2s;">
+            <div class="card" data-building="${buildingName}" data-floor="${floor}" data-room-index="${index}" onclick="viewRoomFromDirectory(this)" style="cursor: pointer; padding: 0; overflow: hidden; transition: transform 0.2s;">
                 <div style="height: 180px; overflow: hidden; background: #eee;">
                     <img src="${roomImg}" onerror="this.src='placeholderimg.jpg'" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                 </div>
@@ -301,14 +313,6 @@ function viewSurvey() {
 
                     <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
 
-                    <div class="scale-legend">
-                        <span>5: Strongly Agree</span>
-                        <span>4: Agree</span>
-                        <span>3: Neutral</span>
-                        <span>2: Disagree</span>
-                        <span>1: Strongly Disagree</span>
-                    </div>
-
                     ${questionsHtml}
                     
                     <div class="survey-question">
@@ -316,7 +320,7 @@ function viewSurvey() {
                         <textarea id="survey-comments" style="width:100%; padding:10px; border-radius:5px; border:1px solid #ddd; min-height:100px;" placeholder="Any other feedback?"></textarea>
                     </div>
 
-                    <button type="submit" class="assistant-btn" style="width:100%; font-size: 1.1rem; justify-content: center;">Submit Survey</button>
+                    <button type="submit" class="assistant-btn" style="width:100%; font-size: 1.1rem; justify-content: center; margin-top:20px;">Submit Survey</button>
                 </form>
             </div>
         </div>
@@ -337,9 +341,19 @@ function submitSurvey(e) {
 
     // Gather question answers
     const answers = {};
+    let allAnswered = true;
     for (let i = 0; i < 10; i++) {
         const qInput = document.querySelector(`input[name="q${i}"]:checked`);
-        answers[`Q${i + 1}`] = qInput ? qInput.value : "";
+        if (qInput) {
+            answers[`Q${i + 1}`] = qInput.value;
+        } else {
+            allAnswered = false;
+        }
+    }
+
+    if (!allAnswered) {
+        alert("Please answer all questions before submitting.");
+        return;
     }
 
     const responseData = {
@@ -432,11 +446,11 @@ function viewEvents() {
     window.currentView = 'events';
     const cardGrid = document.getElementById('card-grid');
 
-    // Default events — use labelled local placeholder images
+    // Default events — images: 1.png, 3.png, exams placeholder, graduation rites placeholder
     const defaultEvents = [
         {
             title: 'NAT Review',
-            date: 'Feb 25, 2026',
+            date: 'Feb. 26, 2026',
             tag: 'Academic',
             img: '1.png',
             desc: 'National Achievement Test review sessions for students.'
@@ -449,14 +463,14 @@ function viewEvents() {
             desc: 'Showcase of student prototype projects and innovations.'
         },
         {
-            title: 'Fourth Quarter Exams',
-            date: 'March 19–20, 2026',
+            title: '4th Quarter Examinations',
+            date: 'To be announced',
             tag: 'Academic',
             img: 'exams placeholder.jpg',
             desc: 'Fourth Quarter periodic examinations for all grade levels.'
         },
         {
-            title: 'End-of-School-Year Rites',
+            title: 'EOSY Rites',
             date: 'March 30–31, 2026',
             tag: 'Ceremony',
             img: 'graduation rites placeholder.jpg',
@@ -467,7 +481,15 @@ function viewEvents() {
     let events = defaultEvents;
     try {
         const stored = localStorage.getItem('kiosk_events');
-        if (stored) events = JSON.parse(stored);
+        if (stored) {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                events = parsed.map((ev, i) => ({
+                    ...ev,
+                    img: ev.img && ev.img !== 'placeholderimg.jpg' ? ev.img : (defaultEvents[i] ? defaultEvents[i].img : 'placeholderimg.jpg')
+                }));
+            }
+        }
     } catch (e) { console.warn('Error loading events:', e); }
 
     let cardsHtml = '';
@@ -490,7 +512,7 @@ function viewEvents() {
     });
 
     cardGrid.innerHTML = `
-        <div class="card about-title-card">
+        <div class="card about-title-card" style="grid-column: 1 / -1;">
             <h3><i class="fas fa-calendar-day"></i> Upcoming Events</h3>
             <p>School events and activities this semester</p>
         </div>
@@ -503,34 +525,94 @@ function viewEvents() {
 }
 function AboutUs() {
     const cardGrid = document.getElementById('card-grid');
+
+    const modeBtn = document.getElementById('mode-toggle-btn');
+    const online = modeBtn ? !modeBtn.classList.contains('mode-offline') : true;
+
+    let historyContent = '';
+    if (online) {
+        historyContent = `
+            <div style="padding: 20px;">
+                <div style="width:100%; height: 550px; border-radius: 10px; overflow: hidden; box-shadow: 0 3px 12px rgba(0,0,0,0.06); border: 1px solid #e0e8ec;">
+                    <embed src="MHS_History.pdf.pdf" type="application/pdf" width="100%" height="100%" style="min-height: 500px;" />
+                </div>
+            </div>
+        `;
+    } else {
+        historyContent = `
+            <div style="padding: 20px;">
+                <div style="
+                    background: linear-gradient(135deg, #2c3e50, #4ca1af);
+                    color: white; border-radius: 10px; padding: 40px 20px;
+                    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+                    text-align: center; height: 300px; box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+                ">
+                    <span style="font-size:3rem;">📵</span>
+                    <h4 style="margin:0; font-size:1.4rem;">Offline Mode</h4>
+                    <p style="margin:0; font-size:1rem; opacity:0.9;">The history document requires an online connection.<br>Please switch to <strong>Online Mode</strong> to view the history of Makati High School.</p>
+                </div>
+            </div>
+        `;
+    }
+
     cardGrid.innerHTML = `
-        <div class="card about-title-card">
-            <h3><i class="fas fa-users"></i> ${translate('team.our_research_team')}</h3>
-            <p>${translate('team.meet_team')}</p>
-        </div>
-        
-        <div class="card member-card">
-            <img src="Clarence Andrei Santelices.jpg" onerror="this.src='placeholderimg.jpg'" alt="Clarence Andrei B. Santelices" class="member-image">
-            <div class="member-name">SANTELICES, CLARENCE ANDREI B.</div>
-            <div class="member-role">${translate('team.research_leader')}</div>
+        <div class="card about-title-card" style="grid-column: 1 / -1;">
+            <h3><i class="fas fa-building"></i> MAKATI HIGH SCHOOL</h3>
+            <p>History, Mission, Vision, and Core Values</p>
         </div>
 
-        <div class="card member-card">
-            <img src="Christian Aragon.jpg" onerror="this.src='placeholderimg.jpg'" alt="Christian Lloyd M. Aragon" class="member-image">
-            <div class="member-name">ARAGON, CHRISTIAN LLOYD M.</div>
-            <div class="member-role">${translate('team.co_researcher')}</div>
+        <div class="card" style="grid-column: 1 / -1; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border: 1px solid rgba(76,161,175,0.2);">
+            <div style="background: linear-gradient(90deg, #2c3e50, #4ca1af); padding: 18px 22px; color: white;">
+                <h3 style="margin: 0; color: white; border: none; font-size: 1.2rem;"><i class="fas fa-landmark"></i> ${translate('about.history') || 'History'}</h3>
+                <p style="margin: 8px 0 0; font-size: 0.92rem; opacity: 0.95;">Scroll through the document below to read the true history of Makati High School</p>
+            </div>
+            ${historyContent}
         </div>
 
-        <div class="card member-card">
-            <img src="libee.jpg" onerror="this.src='placeholderimg.jpg'" alt="John Libee L. Galano" class="member-image">
-            <div class="member-name">GALANO, JOHN LIBEE L.</div>
-            <div class="member-role">${translate('team.co_researcher')}</div>
+        <div class="card" style="grid-column: 1 / -1; border-radius: 12px; border-left: 5px solid #4ca1af; background: linear-gradient(to right, rgba(76,161,175,0.06), transparent);">
+            <div style="padding: 24px;">
+                <h3 style="color: #2c3e50; border-bottom: 2px solid #4ca1af; padding-bottom: 12px; margin-bottom: 16px; font-size: 1.15rem;"><i class="fas fa-bullseye"></i> MAKATI HIGH SCHOOL — OUR MISSION</h3>
+                <p style="color:#37474f; line-height: 1.85; margin: 0;">To protect and promote the right of every Filipino to quality, equitable, culture-based, and complete basic education where:</p>
+                <ul style="color:#37474f; line-height: 1.85; margin: 16px 0 0 24px; padding: 0;">
+                    <li>Students learn in a child-friendly, gender-sensitive, safe, and motivating environment.</li>
+                    <li>Teachers facilitate learning and constantly nurture every learner.</li>
+                    <li>Administrators and staff, as stewards of the institution, ensure an enabling and supportive environment for effective learning to happen.</li>
+                    <li>Family, community, and other stakeholders are actively engaged and share responsibility for developing life-long learners.</li>
+                </ul>
+            </div>
         </div>
 
-        <div class="card member-card">
-            <img src="Mikeria Morondos.jpg" onerror="this.src='placeholderimg.jpg'" alt="Mikeria Angela F. Morondos" class="member-image">
-            <div class="member-name">MORONDOS, MIKERIA ANGELA F.</div>
-            <div class="member-role">${translate('team.co_researcher')}</div>
+        <div class="card" style="grid-column: 1 / -1; border-radius: 12px; border-left: 5px solid #2980b9; background: linear-gradient(to right, rgba(41,128,185,0.06), transparent);">
+            <div style="padding: 24px;">
+                <h3 style="color: #2c3e50; border-bottom: 2px solid #2980b9; padding-bottom: 12px; margin-bottom: 16px; font-size: 1.15rem;"><i class="fas fa-eye"></i> MAKATI HIGH SCHOOL — OUR VISION</h3>
+                <p style="color:#37474f; line-height: 1.85; margin: 0;">We dream of Filipinos who passionately love their country and whose values and competencies enable them to realize their full potential and contribute meaningfully to building the nation.</p>
+                <p style="color:#546e7a; line-height: 1.85; margin-top: 16px;">As a learner-centered public institution, the Department of Education continuously improves itself to better serve its stakeholders.</p>
+            </div>
+        </div>
+
+        <div class="card" style="grid-column: 1 / -1; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 1px solid rgba(76,161,175,0.2);">
+            <div style="padding: 24px;">
+                <h3 style="color: #2c3e50; border-bottom: 2px solid #4ca1af; padding-bottom: 12px; margin-bottom: 20px; font-size: 1.15rem;"><i class="fas fa-heart"></i> OUR CORE VALUES</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
+                    <div style="background: linear-gradient(145deg, #4ca1af, #3d8b96); color: white; padding: 20px; border-radius: 12px; text-align: center; font-weight: 700; font-size: 1.05rem; box-shadow: 0 4px 12px rgba(76,161,175,0.3);">Maka-Diyos</div>
+                    <div style="background: linear-gradient(145deg, #3498db, #2980b9); color: white; padding: 20px; border-radius: 12px; text-align: center; font-weight: 700; font-size: 1.05rem; box-shadow: 0 4px 12px rgba(52,152,219,0.3);">Maka-tao</div>
+                    <div style="background: linear-gradient(145deg, #2c3e50, #1a252f); color: white; padding: 20px; border-radius: 12px; text-align: center; font-weight: 700; font-size: 1.05rem; box-shadow: 0 4px 12px rgba(44,62,80,0.3);">Makakalikasan</div>
+                    <div style="background: linear-gradient(145deg, #2980b9, #1f6dad); color: white; padding: 20px; border-radius: 12px; text-align: center; font-weight: 700; font-size: 1.05rem; box-shadow: 0 4px 12px rgba(41,128,185,0.3);">Makabansa</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="grid-column: 1 / -1; background: linear-gradient(135deg, rgba(76,161,175,0.08), rgba(44,62,80,0.05)); padding: 20px 24px; margin-top: 8px; border-radius: 12px; border: 1px solid rgba(76,161,175,0.2);">
+            <h4 style="color: #2c3e50; margin: 0 0 12px; font-size: 0.98rem;"><i class="fas fa-users"></i> ${translate('team.our_research_team')}</h4>
+            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: 0.9rem; color: #546e7a;">
+                <span>Santelices, Clarence Andrei B. (${translate('team.research_leader')})</span>
+                <span style="color: #4ca1af;">•</span>
+                <span>Aragon, Christian Lloyd M.</span>
+                <span style="color: #4ca1af;">•</span>
+                <span>Galano, John Libee L.</span>
+                <span style="color: #4ca1af;">•</span>
+                <span>Morondos, Mikeria Angela F.</span>
+            </div>
         </div>
     `;
     const modal = document.getElementById('assistant-modal');
@@ -540,7 +622,7 @@ function AboutUs() {
 function readAnnouncements() {
     const cardGrid = document.getElementById('card-grid');
 
-    // Default Announcements
+    // Default Announcements (school announcements)
     const defaultAnnouncements = [
         "Fourth Quarter Exams scheduled for March 19 and 20, 2026",
         "End-of-School-Year Rites on March 30-31, 2026",
@@ -552,26 +634,30 @@ function readAnnouncements() {
 
     let announcements = defaultAnnouncements;
     try {
-        const storedAnnouncements = localStorage.getItem('kiosk_announcements');
-        if (storedAnnouncements) {
-            announcements = JSON.parse(storedAnnouncements);
+        const stored = localStorage.getItem('kiosk_announcements');
+        if (stored) {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                announcements = parsed.map(a => typeof a === 'string' ? a : (a.content || a.title || ''));
+            }
         }
-    } catch (e) {
-        console.warn('Error loading announcements:', e);
-    }
+    } catch (e) { console.warn('Error loading announcements:', e); }
 
     let announcementsHtml = '';
-    announcements.forEach(announcement => {
-        announcementsHtml += `<li>${announcement}</li>`;
+    announcements.forEach(a => {
+        const text = typeof a === 'string' ? a : (a.content || a.title || '');
+        if (text) announcementsHtml += `<li>${text}</li>`;
     });
 
-    cardGrid.innerHTML =
-        '<div class="card">' +
-        '<h3><i class="fas fa-bullhorn"></i> School Announcements</h3>' +
-        '<ul class="event-list">' +
-        announcementsHtml +
-        '</ul>' +
-        '</div>';
+    cardGrid.innerHTML = `
+        <div class="card about-title-card" style="grid-column: 1 / -1;">
+            <h3><i class="fas fa-bullhorn"></i> School Announcements</h3>
+            <p>Latest updates and important notices</p>
+        </div>
+        <div class="card" style="grid-column: 1 / -1;">
+            <ul class="event-list">${announcementsHtml}</ul>
+        </div>
+    `;
     const modal = document.getElementById('assistant-modal');
     if (modal) modal.style.display = 'none';
 }
@@ -1534,6 +1620,7 @@ function viewSpecificRoom(buildingName, roomCode, roomData) {
         `${desc}`
     ];
     const ttsJSON = JSON.stringify(ttsContent).replace(/"/g, '&quot;');
+    const safeLabelForNav = (label || '').replace(/'/g, "\\'");
 
     cardGrid.innerHTML = `
         <div class="card" style="grid-column: 1 / -1; display:flex; align-items:center; gap:15px; background:linear-gradient(to right, #4ca1af, #2c3e50); color:white;">
@@ -1563,11 +1650,11 @@ function viewSpecificRoom(buildingName, roomCode, roomData) {
                 </button>
             </div>
 
-            <!-- Navigation Placeholder Card -->
-            <div onclick="showNavigation('${buildingName}', '${label}')" style="margin-top: 20px; border: 2px dashed #4ca1af; border-radius: 10px; padding: 15px; background: #f9ffff; cursor: pointer; transition: background 0.3s; text-align: center;">
-                <div style="font-size: 2rem; color: #4ca1af; margin-bottom: 10px;"><i class="fas fa-map-marked-alt"></i></div>
-                <h4 style="color: #2c3e50; margin-bottom: 5px;">${translate('buttons.tap_directions')}</h4>
-                <p style="color: #666; font-size: 0.9rem;">${translate('labels.show_path')} ${label}</p>
+            <!-- Navigation / Full Directions Card -->
+            <div onclick="showNavigation('${buildingName}', '${safeLabelForNav}')" style="margin-top: 30px; border: 3px dashed #3498db; border-radius: 12px; padding: 25px; background: #eaf4fb; cursor: pointer; transition: all 0.3s ease; text-align: center; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);" onmouseover="this.style.background='#d4eaf7'; this.style.transform='translateY(-5px)';" onmouseout="this.style.background='#eaf4fb'; this.style.transform='translateY(0)';">
+                <div style="font-size: 3rem; color: #2980b9; margin-bottom: 15px;"><i class="fas fa-map-marked-alt"></i></div>
+                <h4 style="color: #2c3e50; margin-bottom: 8px; font-size: 1.5rem; font-weight: bold;">${translate('buttons.tap_directions')}</h4>
+                <p style="color: #555; font-size: 1.1rem; margin: 0;">${translate('labels.show_path')} <strong style="color: #e67e22;">${label}</strong></p>
             </div>
         </div>
     `;
@@ -1733,10 +1820,10 @@ function showNavigation(buildingName, destinationLabel) {
 
     if (textDirections && textDirections.length > 0) {
         directionsArray = textDirections;
-        directionsHtml += '<ol style="padding-left: 20px; line-height: 1.6; color: #555;">';
+        directionsHtml += '<ol style="padding-left: 30px; line-height: 1.8; color: #333; font-size: 1.2rem; font-weight: 500;">';
         textDirections.forEach(step => {
             const translatedStep = translateDirection(step);
-            directionsHtml += `<li>${translatedStep}</li>`;
+            directionsHtml += `<li style="margin-bottom: 8px;">${translatedStep}</li>`;
         });
         directionsHtml += '</ol>';
     } else {
@@ -1749,12 +1836,12 @@ function showNavigation(buildingName, destinationLabel) {
             `Look for ${destinationLabel}.`
         ];
         directionsHtml = `
-            <ol style="padding-left: 20px; line-height: 1.6; color: #555;">
-                <li>${translateDirection(directionsArray[0])}</li>
-                <li>${translateDirection(directionsArray[1])}</li>
-                <li>${translateDirection(directionsArray[2])}</li>
-                <li>${translateDirection(directionsArray[3])}</li>
-                <li>${translateDirection(directionsArray[4])}</li>
+            <ol style="padding-left: 30px; line-height: 1.8; color: #333; font-size: 1.2rem; font-weight: 500;">
+                <li style="margin-bottom: 8px;">${translateDirection(directionsArray[0])}</li>
+                <li style="margin-bottom: 8px;">${translateDirection(directionsArray[1])}</li>
+                <li style="margin-bottom: 8px;">${translateDirection(directionsArray[2])}</li>
+                <li style="margin-bottom: 8px;">${translateDirection(directionsArray[3])}</li>
+                <li style="margin-bottom: 8px;">${translateDirection(directionsArray[4])}</li>
             </ol>
         `;
     }
@@ -1771,10 +1858,10 @@ function showNavigation(buildingName, destinationLabel) {
         </div>
 
         <div class="card" style="grid-column: 1 / -1; min-height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
-            <img src="${directionalImage}" onerror="this.src='placeholderimg.jpg'" alt="Navigation Map" style="max-width: 500px; width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 20px;">
+            <img src="${directionalImage}" onerror="this.src='placeholderimg.jpg'" alt="Navigation Map" style="max-width: 800px; width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); margin-bottom: 30px;">
             
-            <div style="background: #e8f6f3; padding: 20px; border-radius: 10px; border-left: 5px solid #2ecc71; max-width: 600px; width: 100%; text-align: left;">
-                <h4 style="color: #2c3e50; margin-bottom: 15px;"><i class="fas fa-walking"></i> ${translate('headers.directions')}</h4>
+            <div style="background: #e8f6f3; padding: 25px 35px; border-radius: 12px; border-left: 8px solid #2ecc71; max-width: 800px; width: 100%; text-align: left; box-shadow: 0 4px 20px rgba(46, 204, 113, 0.15);">
+                <h4 style="color: #2c3e50; margin-bottom: 20px; font-size: 1.5rem;"><i class="fas fa-walking"></i> ${translate('headers.directions')}</h4>
                 ${directionsHtml}
             </div>
 
@@ -1899,28 +1986,28 @@ function getDefaultEvents() {
             title: "Science Fair 2026",
             date: "Feb 20, 2026 • 8:00 AM - 4:00 PM",
             desc: "Showcasing student innovations and experiments. Venue: School Gymnasium.",
-            img: "placeholderimg.jpg",
+            img: "1.png",
             tag: "Academic"
         },
         {
             title: "Basketball Championship",
             date: "Feb 25, 2026 • 3:00 PM",
             desc: "Makati High vs. Rizal High. Come and support our team! Venue: Covered Court.",
-            img: "placeholderimg.jpg",
+            img: "3.png",
             tag: "Sports"
         },
         {
             title: "Fourth Quarter Exams",
             date: "March 19–20, 2026",
             desc: "Please settle all accountabilities before the examination dates.",
-            img: "placeholderimg.jpg",
+            img: "exams placeholder.jpg",
             tag: "Exams"
         },
         {
             title: "EOSY Graduation Rites",
             date: "March 30, 2026 • 1:00 PM",
             desc: "Celebrating the Class of 2026. Theme: 'Kabataang Pilipino: Tanglaw ng Kinabukasan'.",
-            img: "placeholderimg.jpg",
+            img: "graduation rites placeholder.jpg",
             tag: "Event"
         }
     ];
@@ -1954,45 +2041,3 @@ function getDefaultAnnouncements() {
 
 
 
-function readAnnouncements() {
-    const cardGrid = document.getElementById('card-grid');
-    // Try to get from local storage or use default
-    let news = [];
-    try {
-        const stored = localStorage.getItem('kiosk_announcements');
-        if (stored) news = JSON.parse(stored);
-    } catch (e) { console.error(e); }
-
-    if (news.length === 0) news = getDefaultAnnouncements();
-
-    let cardsHtml = '';
-    news.forEach(item => {
-        cardsHtml += `
-            <div class="card" style="padding:20px; border-left: 4px solid #3498db;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <span style="background:#eaf4fb; color:#2980b9; padding:4px 10px; border-radius:15px; font-size:0.8rem;">
-                        <i class="fab fa-facebook"></i> ${item.source || 'Announcement'}
-                    </span>
-                    <span style="color:#999; font-size:0.85rem;">${item.date}</span>
-                </div>
-                <h3 style="margin:0 0 10px; color:#2c3e50;">${item.title}</h3>
-                <p style="color:#555; line-height:1.6;">${item.content}</p>
-            </div>
-        `;
-    });
-
-    cardGrid.innerHTML = `
-        <div class="card" style="grid-column: 1 / -1; display:flex; align-items:center; gap:15px; background:linear-gradient(to right, #3498db, #2980b9); color:white;">
-            <button onclick="window.history.back(); location.reload();" style="background:rgba(255,255,255,0.2); border:none; color:white; padding:10px 15px; border-radius:5px; cursor:pointer; font-size:1rem;">
-                <i class="fas fa-arrow-left"></i> Back
-            </button>
-            <h3 style="margin:0; border:none; color:white;">📢 News & Announcements</h3>
-        </div>
-        <div style="grid-column: 1 / -1; display: flex; flex-direction: column; gap: 15px;">
-            ${cardsHtml}
-        </div>
-    `;
-
-    const modal = document.getElementById('assistant-modal');
-    if (modal) modal.style.display = 'none';
-}

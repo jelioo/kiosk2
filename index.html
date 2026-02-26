@@ -39,7 +39,7 @@
         <div class="main-content">
             <div class="sidebar">
                 <div class="search-box">
-                    <input type="text" id="search-input" placeholder="Search for rooms, people..."
+                    <input type="text" id="search-input" placeholder="Search here!"
                         data-translate-placeholder="search_placeholder" onkeypress="checkSearchEnter(event)">
                     <button id="voice-search-btn" onclick="startVoiceSearch()" title="Voice Search"><i
                             class="fas fa-microphone"></i></button>
@@ -77,14 +77,29 @@
                         <h3><i class="fas fa-calendar-day"></i> <span
                                 data-translate="homepage.upcoming_events_title">Upcoming Events</span></h3>
                         <ul class="event-list">
-                            <li><span data-translate="events.fourth_quarter_exams">Fourth Quarter Exams</span> <span
-                                    class="event-date">March 19-20, 2026</span></li>
-                            <li><span data-translate="events.eosy_rites">End-of-School-Year Rites</span> <span
-                                    class="event-date">March 30-31, 2026</span>
+                            <li>
+                                <div>
+                                    <span data-translate="NAT Review">NAT Review</span>
+                                    <span class="event-date">Feb. 26, 2026</span>
+                                </div>
                             </li>
-                            <li><span data-translate="events.parent_teacher_conf">Parent-Teacher Conference</span> <span
-                                    class="event-date" data-translate="events.after_quarter_exams">After Quarter
-                                    Exams</span>
+                            <li>
+                                <div>
+                                    <span data-translate="Prototype Exhibition">Prototype Exhibition</span>
+                                    <span class="event-date">March 6, 2026</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div>
+                                    <span data-translate="events.fourth_quarter_exams">4th Quarter Examinations</span>
+                                    <span class="event-date">To be announced</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div>
+                                    <span data-translate="events.eosy_rites">EOSY Rites</span>
+                                    <span class="event-date">March 30-31, 2026</span>
+                                </div>
                             </li>
                         </ul>
                     </div>
@@ -92,12 +107,26 @@
                         <h3><i class="fas fa-clipboard-list"></i> <span
                                 data-translate="homepage.announcements_title">Announcements</span></h3>
                         <ul class="event-list">
-                            <li data-translate="announcements.exams_scheduled">Fourth Quarter Exams scheduled for March
-                                19 and 20, 2026</li>
-                            <li data-translate="announcements.eosy_march">End-of-School-Year Rites on March 30-31, 2026
+                            <li>
+                                <div>
+                                    <span data-translate="announcements.exams_scheduled">Fourth Quarter Exams scheduled
+                                        for March
+                                        19 and 20, 2026</span>
+                                </div>
                             </li>
-                            <li data-translate="announcements.submit_clearance">Submit all clearance requirements before
-                                EOSY Rites</li>
+                            <li>
+                                <div>
+                                    <span data-translate="announcements.eosy_march">End-of-School-Year Rites on March
+                                        30-31, 2026</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div>
+                                    <span data-translate="announcements.submit_clearance">Submit all clearance
+                                        requirements before
+                                        EOSY Rites</span>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                     <div class="card schedule-card" id="schedule-card">

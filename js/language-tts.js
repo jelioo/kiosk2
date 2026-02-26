@@ -97,6 +97,18 @@ const translations = {
             report_cards: "Report cards will be distributed after quarter exams",
             school_year_ends: "School Year 2025-2026 ends on March 31, 2026"
         },
+        about: {
+            title: "About Makati High School",
+            subtitle: "History, Mission, Vision, and Values",
+            history: "History",
+            history_text: "Makati High School (MHS) was established in 1968 and has since been one of the premier public secondary schools in Makati City. For over five decades, MHS has provided quality education to thousands of students, fostering academic excellence, character formation, and service to the community.",
+            mission: "Mission",
+            mission_text: "To protect and promote the right of every Filipino to quality, equitable, culture-based, and complete basic education where students learn in a child-friendly, gender-sensitive, safe, and motivating environment, and where teachers facilitate learning and constantly nurture every learner.",
+            vision: "Vision",
+            vision_text: "We dream of Filipinos who passionately love their country and whose values and competencies enable them to realize their full potential and contribute meaningfully to building the nation.",
+            values: "Core Values",
+            values_text: "Makati High School upholds the DepEd core values of Maka-Diyos (God-loving), Maka-tao (People-loving), Makakalikasan (Nature-loving), and Makabansa (Country-loving). These values guide our students, teachers, and staff in building a just and humane society."
+        },
         team: {
             our_research_team: "Our Research Team",
             meet_team: "Meet the dedicated minds behind this project",
@@ -229,6 +241,18 @@ const translations = {
             submit_clearance: "Ipasa ang lahat ng clearance requirements bago ang EOSY Rites",
             report_cards: "Ang mga report card ay ibibigay pagkatapos ng quarter exams",
             school_year_ends: "Ang Taong Paaralan 2025-2026 ay magtatapos sa Marso 31, 2026"
+        },
+        about: {
+            title: "Tungkol sa Mataas na Paaralang Makati",
+            subtitle: "Kasaysayan, Misyon, Bisyon, at mga Halagahin",
+            history: "Kasaysayan",
+            history_text: "Ang Mataas na Paaralang Makati (MHS) ay itinatag noong 1968 at mula noon ay naging isa sa mga nangungunang pampublikong sekundaryang paaralan sa Lungsod ng Makati. Sa mahigit limang dekada, ang MHS ay nagbigay ng de-kalidad na edukasyon sa libu-libong mag-aaral, tinatangkilik ang kahusayan sa akademiko, paghubog ng karakter, at paglilingkod sa pamayanan.",
+            mission: "Misyon",
+            mission_text: "Iprotektahan at itaguyod ang karapatan ng bawat Pilipino sa de-kalidad, makatarungang, kulturang batayang, at kumpletong batayang edukasyon kung saan ang mga mag-aaral ay natututo sa isang friendly sa bata, sensitibo sa kasarian, ligtas, at motibasyonal na kapaligiran, at kung saan ang mga guro ay nagpapadaloy ng pagkatuto at palagiang nag-aalaga sa bawat mag-aaral.",
+            vision: "Bisyon",
+            vision_text: "Pangarap namin ang mga Pilipinong masigasig na nagmamahal sa kanilang bansa at ang kanilang mga halagahin at kakayahan ay nagbibigay-daan sa kanila na makamit ang kanilang buong potensyal at makapag-ambag nang makabuluhan sa pagbuo ng bansa.",
+            values: "Mga Halagahin",
+            values_text: "Ang Mataas na Paaralang Makati ay pinanghahawakan ang mga halagahin ng DepEd: Maka-Diyos, Maka-tao, Makakalikasan, at Makabansa. Ang mga halagahing ito ang gumagabay sa aming mga mag-aaral, guro, at kawani sa pagbuo ng isang makatarungang at makataong lipunan."
         },
         team: {
             our_research_team: "Ang Aming Koponan sa Pananaliksik",

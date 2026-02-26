@@ -1,7 +1,7 @@
 .mini-assistant {
     position: fixed;
-    bottom: 24px;
-    right: 24px;
+    bottom: 30px;
+    right: 40px;
     width: 60px;
     height: 60px;
     background: linear-gradient(135deg, #4ca1af, #2c3e50);
@@ -14,7 +14,7 @@
     cursor: pointer;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     animation: float 3s ease-in-out infinite;
-    z-index: 10001;
+    z-index: 1000;
     transition: transform 0.3s ease;
 }
 
@@ -76,7 +76,7 @@
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 10002;
+    z-index: 1001;
     align-items: center;
     justify-content: center;
     animation: fadeIn 0.3s ease;
@@ -91,6 +91,7 @@
     width: 90%;
     text-align: center;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    /* Springy Pop In */
     animation: elasticPop 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
@@ -250,8 +251,6 @@
         width: 50px;
         height: 50px;
         font-size: 20px;
-        bottom: 20px;
-        right: 20px;
     }
 
     .assistant-buttons {
