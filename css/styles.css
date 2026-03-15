@@ -900,6 +900,17 @@
             border-bottom-color: rgba(255, 255, 255, 0.3);
         }
 
+        /* Two clickable section cards in About Us landing */
+        .about-section-card {
+            flex: 1 1 calc(50% - 10px);
+            min-width: 220px;
+        }
+
+        /* Ensure the card-grid shows both section cards side-by-side */
+        #card-grid:has(.about-section-card) {
+            grid-template-columns: 1fr 1fr;
+        }
+
         .member-card {
             display: flex;
             flex-direction: column;

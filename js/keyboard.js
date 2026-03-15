@@ -1,5 +1,17 @@
 let currentInput = null;
 let isCapsLock = false;
+let _kbHideTimer = null;
+
+// Reset the 7-second auto-hide countdown
+function _resetKbTimer() {
+    if (_kbHideTimer) clearTimeout(_kbHideTimer);
+    _kbHideTimer = setTimeout(() => {
+        const keyboard = document.getElementById('virtual-keyboard');
+        if (keyboard && keyboard.style.display !== 'none') {
+            keyboard.style.display = 'none';
+        }
+    }, 7000);
+}
 
 document.addEventListener('DOMContentLoaded', function () {
     // Attach focus events — tracks which input the keyboard should type into
@@ -10,12 +22,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 currentInput = e.target;
                 const keyboard = document.getElementById('virtual-keyboard');
                 if (keyboard) keyboard.style.display = 'block';
+                _resetKbTimer();
             }
         }
     });
+
+    // Any touch/click on the keyboard itself resets the timer
+    const kb = document.getElementById('virtual-keyboard');
+    if (kb) {
+        kb.addEventListener('mousedown', _resetKbTimer);
+        kb.addEventListener('touchstart', _resetKbTimer, { passive: true });
+    }
 });
 
 function closeKeyboard() {
+    if (_kbHideTimer) clearTimeout(_kbHideTimer);
     const keyboard = document.getElementById('virtual-keyboard');
     if (keyboard) keyboard.style.display = 'none';
 }
@@ -33,11 +54,13 @@ function toggleCapsLock() {
     keys.forEach(key => {
         if (!key.classList.contains('special') && !key.classList.contains('space') && !key.classList.contains('close-keyboard')) {
             const char = key.textContent;
-            if (char.length === 1 && /[a-zA-Z]/.test(char)) {
+            if (char.length === 1 && /[a-zA-ZÑñ]/.test(char)) {
                 key.textContent = isCapsLock ? char.toUpperCase() : char.toLowerCase();
             }
         }
     });
+
+    _resetKbTimer();
 }
 
 function typeKey(key) {
@@ -86,7 +109,7 @@ function typeKey(key) {
         }
     } else {
         let char = key;
-        if (char.length === 1 && /[a-zA-Z]/.test(char)) {
+        if (char.length === 1 && /[a-zA-ZÑñ]/.test(char)) {
             char = isCapsLock ? char.toUpperCase() : char.toLowerCase();
         }
         currentInput.value += char;
@@ -94,4 +117,7 @@ function typeKey(key) {
 
     // Fire an input event so live search / chat updates
     currentInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+    // Reset the inactivity timer on every keystroke
+    _resetKbTimer();
 }

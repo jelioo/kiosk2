@@ -247,16 +247,18 @@ function rate(stars) {
 function viewSurvey() {
     const cardGrid = document.getElementById('card-grid');
     const questions = [
-        "The AI-powered kiosk is easy to access when I need school information.",
-        "The kiosk interface is easy to understand and use without assistance.",
-        "The kiosk is convenient and available for students, staff, and visitors.",
-        "The kiosk allows me to get school information faster than traditional methods.",
-        "The search function helps me find information quickly.",
-        "Using the kiosk saves me time when checking schedules, announcements, or events.",
-        "The kiosk makes it easier to find rooms and school facilities.",
-        "The interactive map helps me navigate the campus efficiently.",
-        "The kiosk provides accurate and reliable school information.",
-        "Overall, I am satisfied with the kiosk as a tool for information access and navigation."
+        "The kiosk helped me find information faster than the bulletin board.",
+        "Searching for multiple pieces of information was quicker on the kiosk.",
+        "The information on the kiosk seemed more accurate and up-to-date.",
+        "I trust the information on the kiosk more than the bulletin board.",
+        "The kiosk made it easier to find specific rooms and locations.",
+        "The interactive map was helpful for navigation.",
+        "The search function helped me find information quickly.",
+        "The kiosk provided more detailed information than the bulletin board.",
+        "The real-time updates on the kiosk are valuable.",
+        "Overall, the kiosk enhances speed, accuracy, and ease of navigation compared to the bulletin board.",
+        "I prefer using the kiosk over the traditional bulletin board.",
+        "The school should install more kiosks in other locations."
     ];
 
     let questionsHtml = '';
@@ -342,7 +344,7 @@ function submitSurvey(e) {
     // Gather question answers
     const answers = {};
     let allAnswered = true;
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 12; i++) {
         const qInput = document.querySelector(`input[name="q${i}"]:checked`);
         if (qInput) {
             answers[`Q${i + 1}`] = qInput.value;
@@ -449,29 +451,29 @@ function viewEvents() {
     // Default events — images: 1.png, 3.png, exams placeholder, graduation rites placeholder
     const defaultEvents = [
         {
-            title: 'NAT Review',
-            date: 'Feb. 26, 2026',
+            title: 'NAT Exams',
+            date: 'Mar. 9-11, 2026',
             tag: 'Academic',
             img: '1.png',
-            desc: 'National Achievement Test review sessions for students.'
+            desc: 'National Achievement Test for Grade 12 students.'
         },
         {
             title: 'Prototype Exhibition',
-            date: 'March 6, 2026',
+            date: 'March 9, 2026',
             tag: 'Academic',
             img: '3.png',
-            desc: 'Showcase of student prototype projects and innovations.'
+            desc: 'Showcase of STEM students prototype projects and innovations.'
         },
         {
             title: '4th Quarter Examinations',
-            date: 'To be announced',
+            date: 'Mar. 12-13, 2026',
             tag: 'Academic',
             img: 'exams placeholder.jpg',
             desc: 'Fourth Quarter periodic examinations for all grade levels.'
         },
         {
             title: 'EOSY Rites',
-            date: 'March 30–31, 2026',
+            date: 'March 30-31, 2026',
             tag: 'Ceremony',
             img: 'graduation rites placeholder.jpg',
             desc: 'End-of-school-year rites and graduation ceremony for graduating students.'
@@ -526,6 +528,75 @@ function viewEvents() {
 function AboutUs() {
     const cardGrid = document.getElementById('card-grid');
 
+    cardGrid.innerHTML = `
+        <div class="card about-title-card" style="grid-column: 1 / -1;">
+            <h3><i class="fas fa-building"></i> MAKATI HIGH SCHOOL</h3>
+            <p>Select a section to explore</p>
+        </div>
+
+        <div class="about-section-card" onclick="showHistorySection()" style="
+            grid-column: span 1;
+            cursor: pointer;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 6px 24px rgba(44,62,80,0.13);
+            border: 2px solid rgba(76,161,175,0.25);
+            transition: transform 0.18s, box-shadow 0.18s;
+            background: white;
+        "
+        onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 32px rgba(76,161,175,0.22)'"
+        onmouseout="this.style.transform=''; this.style.boxShadow='0 6px 24px rgba(44,62,80,0.13)'">
+            <div style="background: linear-gradient(135deg, #2c3e50, #4ca1af); padding: 30px 24px; color: white; text-align: center;">
+                <div style="font-size: 2.8rem; margin-bottom: 12px;">🏛️</div>
+                <h3 style="margin: 0; color: white; border: none; font-size: 1.25rem; font-weight: 700;">History, Mission,<br>Vision &amp; Values</h3>
+            </div>
+            <div style="padding: 18px 22px; background: linear-gradient(to bottom, rgba(76,161,175,0.06), transparent);">
+                <p style="margin: 0; color: #546e7a; font-size: 0.93rem; line-height: 1.6; text-align: center;">
+                    Learn about our school's rich history, guiding mission, inspiring vision, and the core values that define us.
+                </p>
+                <div style="margin-top: 14px; text-align: center;">
+                    <span style="display: inline-block; background: linear-gradient(90deg, #2c3e50, #4ca1af); color: white; padding: 8px 22px; border-radius: 20px; font-size: 0.88rem; font-weight: 600; letter-spacing: 0.4px;">
+                        <i class="fas fa-arrow-right"></i> View Section
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-section-card" onclick="showOrgChart()" style="
+            grid-column: span 1;
+            cursor: pointer;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 6px 24px rgba(44,62,80,0.13);
+            border: 2px solid rgba(41,128,185,0.25);
+            transition: transform 0.18s, box-shadow 0.18s;
+            background: white;
+        "
+        onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 32px rgba(41,128,185,0.22)'"
+        onmouseout="this.style.transform=''; this.style.boxShadow='0 6px 24px rgba(44,62,80,0.13)'">
+            <div style="background: linear-gradient(135deg, #1f6dad, #2980b9); padding: 30px 24px; color: white; text-align: center;">
+                <div style="font-size: 2.8rem; margin-bottom: 12px;">🏫</div>
+                <h3 style="margin: 0; color: white; border: none; font-size: 1.25rem; font-weight: 700;">School<br>Organizational Chart</h3>
+            </div>
+            <div style="padding: 18px 22px; background: linear-gradient(to bottom, rgba(41,128,185,0.06), transparent);">
+                <p style="margin: 0; color: #546e7a; font-size: 0.93rem; line-height: 1.6; text-align: center;">
+                    View the organizational structure of Makati High School, including administration, faculty, and staff.
+                </p>
+                <div style="margin-top: 14px; text-align: center;">
+                    <span style="display: inline-block; background: linear-gradient(90deg, #1f6dad, #2980b9); color: white; padding: 8px 22px; border-radius: 20px; font-size: 0.88rem; font-weight: 600; letter-spacing: 0.4px;">
+                        <i class="fas fa-arrow-right"></i> View Chart
+                    </span>
+                </div>
+            </div>
+        </div>
+    `;
+    const modal = document.getElementById('assistant-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+function showHistorySection() {
+    const cardGrid = document.getElementById('card-grid');
+
     const modeBtn = document.getElementById('mode-toggle-btn');
     const online = modeBtn ? !modeBtn.classList.contains('mode-offline') : true;
 
@@ -556,9 +627,11 @@ function AboutUs() {
     }
 
     cardGrid.innerHTML = `
-        <div class="card about-title-card" style="grid-column: 1 / -1;">
-            <h3><i class="fas fa-building"></i> MAKATI HIGH SCHOOL</h3>
-            <p>History, Mission, Vision, and Core Values</p>
+        <div class="card" style="grid-column: 1 / -1; display:flex; align-items:center; gap:15px; background:linear-gradient(to right, #2c3e50, #4ca1af); color:white; border-radius:12px;">
+            <button onclick="AboutUs()" style="background:rgba(255,255,255,0.2); border:none; color:white; padding:10px 15px; border-radius:5px; cursor:pointer; font-size:1rem;">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <h3 style="margin:0; border:none; color:white;"><i class="fas fa-building"></i> History, Mission, Vision &amp; Values</h3>
         </div>
 
         <div class="card" style="grid-column: 1 / -1; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border: 1px solid rgba(76,161,175,0.2);">
@@ -619,12 +692,263 @@ function AboutUs() {
     if (modal) modal.style.display = 'none';
 }
 
+// ─── Department data for org chart ───────────────────────────────────────────
+const ORG_DEPARTMENTS = [
+    {
+        label: 'Administration',
+        icon: '👨‍💼',
+        color: '#2c3e50',
+        folder: null,  // uses placeholder principal card
+        members: []    // populated by principal card only
+    },
+    {
+        label: 'Non-Teaching',
+        icon: '🗂️',
+        color: '#e67e22',
+        folder: 'Non - Teaching Personnel [r',
+        members: ['ABAD', 'AGUILAR', 'ALCANTARA', 'ANCOG', 'APOLINAR', 'BAILON', 'CARIASA', 'DALIGUES', 'DOMINGO-1', 'FELIX-T.-BUNAGAN', 'HEYRES', 'JAVIER', 'MAGALONA', 'MICABALO', 'PADUA2-1', 'PAEZ', 'PALMAN', 'REYES', 'ROLDAN', 'SACLOTE', 'SANTOS-1', 'SANTOS-O', 'SUMALBAG', 'VENTURA-1']
+    },
+    {
+        label: 'Senior High School',
+        icon: '🎓',
+        color: '#8e44ad',
+        folder: 'Senior High School org chart',
+        members: ['2-FLORES-1', '2-LAUD', 'ABRAZALDO', 'ADDATU', 'ARGUELLES', 'BARACEROS', 'BEDON', 'BULAN', 'BURAGA', 'CERVANTES', 'CHAN', 'CRUZ', 'DAMASCO', 'DIZON', 'DOLATRE', 'ESPIRITU', 'GALLETA', 'GERUNDIO', 'IRLANDEZ-D', 'IRLANDEZ-MC', 'LEONES', 'LORENZO', 'LUNA', 'MAMAUAG', 'MARIANO', 'MOSADA', 'NOCELO', 'PAREDES', 'PEPITO', 'RAYMUNDO', 'SALAS', 'SANCHEZ', 'SANTOS', 'SAULON', 'SAYSON', 'SUAVILLO', 'SUGBO', 'TONGCO']
+    },
+    {
+        label: 'Math',
+        icon: '📐',
+        color: '#27ae60',
+        folder: 'Math department org chart',
+        members: ['2-AGUILAN', 'ADRIAS', 'ALETA', 'BONDOC', 'CLORES', 'CUEVAS', 'DACECO', 'DAGOOC', 'DECANO', 'DOMINGO', 'MABBORANG', 'MORLA', 'PILI', 'PUNONGBAYAN', 'QUINTUA', 'RESULTO', 'SABADO', 'SUMPAY', 'VILLAMER']
+    },
+    {
+        label: 'Science',
+        icon: '🔬',
+        color: '#16a085',
+        folder: 'Science Department org chart',
+        members: ['2-PENULIAR', 'ABARIENTOS', 'ALCALA', 'ANIS', 'ANONUEVO', 'ARELLANO', 'CALIBOSO', 'COLCOL', 'MAGSISI', 'MENDE', 'MESA', 'PILITINA', 'ROSALES', 'SAMANIEGO', 'SANCHEZ-1', 'SANGDAAN', 'VARGAS', 'VENTURA', 'VINELES']
+    },
+    {
+        label: 'English',
+        icon: '📖',
+        color: '#2980b9',
+        folder: 'English department org chart',
+        members: ['2-CADUHADA', 'AGUSTIN', 'APOSTOL', 'CARREON', 'DADERO', 'DANAO', 'DEL-ROSARIO', 'IGHARAS', 'MAMBA', 'MANIEGO', 'MARTINEZ', 'MESINA', 'MINGASCA', 'PACNIS', 'RAMOS', 'SABURNIDO', 'VILLANUEVA']
+    },
+    {
+        label: 'Filipino',
+        icon: '📜',
+        color: '#c0392b',
+        folder: 'Filipino department org chart',
+        members: ['2-VALENCIA', 'ABRENICA', 'ATAIZA', 'DAG-O', 'ECO', 'ENRIJO', 'FERNANDEZ', 'FRANCISCO', 'LUNDAG', 'MANLONGAT', 'MARTINEZ', 'MATITU', 'MAURICIO', 'PONTILLAS', 'REGALADO', 'SAN-PEDRO', 'SEBASTIAN', 'SOHAL']
+    },
+    {
+        label: 'Araling Panlipunan',
+        icon: '🌏',
+        color: '#d35400',
+        folder: 'Araling panlipunan department org chart',
+        members: ['2-AMARANTE', 'ABAD', 'ALDE', 'ANONUEVO', 'BALOLOY', 'BARTOLOME', 'CANCERAN', 'DACANAY', 'DELA-CERNA', 'ESTACIO', 'OREGAS', 'PUSA', 'QUIAEM', 'RODRIGUEZ', 'TERCE']
+    },
+    {
+        label: 'MAPEH',
+        icon: '🎨',
+        color: '#e91e63',
+        folder: 'Mapeh department org chart',
+        members: ['2-PAYUMO', 'ANDES', 'CASTRO', 'CUSIPAG', 'ESCASINAS', 'GACIAS', 'GARCIA', 'GAVINO', 'MACABADBAD', 'MICLAT', 'NAYVE', 'OSMENA', 'REEDYK', 'SANTIAGO', 'TALLO', 'TIPON', 'TORRES-768x576']
+    },
+    {
+        label: 'TLE',
+        icon: '🔧',
+        color: '#795548',
+        folder: 'TLE department org chart',
+        members: ['2-FLORES', 'ANGELES', 'ANTOLIN', 'ARIAS', 'AUDAL', 'BAYLOSIS', 'BOLANIO', 'BORROMEO', 'BUENA', 'CANCAN', 'DAULONG', 'DIAMSE', 'LAPUT', 'LLABORE', 'MAGTARAYO', 'PEREZ', 'TUGANO', 'VICEDOR']
+    },
+    {
+        label: 'ESP',
+        icon: '🌱',
+        color: '#00897b',
+        folder: 'ESP department org chart',
+        members: ['2-MAYBITUIN', 'ABAD-1', 'ANDICOY-1', 'BANDONG', 'BIAGTAN', 'FRANCO', 'JOAQUIN', 'MACABEO', 'MEMPIN', 'OSERA-1', 'RACINES', 'RIVERA', 'ROSE-1', 'SUZUKI', 'TORRES-1', 'TUNGCUL']
+    },
+    {
+        label: 'Guidance',
+        icon: '💬',
+        color: '#5c6bc0',
+        folder: 'Guidance and Counseling org chart',
+        members: ['2-VALENCIA', 'ANDICOY', 'BOBILES', 'MENDE-1', 'OSERA', 'ROSE']
+    }
+];
+
+function getOrgMemberImg(folder, memberName) {
+    // Try .png first, then .jpg
+    const base = folder + '/' + memberName;
+    return base + '.png'; // onerror will try .jpg fallback
+}
+
+function renderOrgDepartment(deptIndex) {
+    const dept = ORG_DEPARTMENTS[deptIndex];
+    const panel = document.getElementById('org-dept-panel');
+    if (!panel) return;
+
+    // Update active tab style
+    document.querySelectorAll('.org-dept-tab').forEach((t, i) => {
+        t.style.background = i === deptIndex ? dept.color : 'rgba(255,255,255,0.12)';
+        t.style.fontWeight = i === deptIndex ? '700' : '500';
+        t.style.transform = i === deptIndex ? 'scale(1.04)' : '';
+    });
+
+    if (dept.folder === null) {
+        // Administration tab — show principal photo
+        panel.innerHTML = `
+            <div style="text-align:center; padding: 30px 20px;">
+                <div style="
+                    width: 160px; height: 200px; margin: 0 auto 18px;
+                    border-radius: 16px; overflow: hidden;
+                    box-shadow: 0 6px 24px rgba(0,0,0,0.13);
+                    border: 3px solid #4ca1af;
+                ">
+                    <img src="Principal.jpg" onerror="this.src='placeholderimg.jpg'" alt="School Principal"
+                         style="width:100%; height:100%; object-fit:cover; object-position:top;">
+                </div>
+                <h3 style="color:#2c3e50; margin:0 0 4px; font-size:1.1rem;">G. Noly B. Francisco</h3>
+                <p style="color:#546e7a; font-size:0.85rem; margin:0 0 2px; font-weight:600;">School Principal</p>
+                <p style="color:#546e7a; font-size:0.83rem; margin:0;">Makati High School</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Determine image extension per member (try .png, onerror .jpg)
+    const knownJpg = ['CERVANTES', 'PADUA2-1', 'ANGELES'];
+    let cards = dept.members.map(name => {
+        const displayName = name
+            .replace(/^2-/, '')
+            .replace(/-\d+$/, '')
+            .replace(/-768x576$/, '')
+            .replace(/-[A-Z]$/, m => ' ' + m.slice(1))
+            .replace(/-/g, ' ');
+        const enc = s => s.replace(/ /g, '%20').replace(/\[/g, '%5B').replace(/\]/g, '%5D');
+        const ext = knownJpg.includes(name) ? '.jpg' : '.png';
+        const src = enc(dept.folder + '/' + name + ext);
+        const fallbackPng = enc(dept.folder + '/' + name + '.png');
+        const fallbackJpg = enc(dept.folder + '/' + name + '.jpg');
+        return `
+            <div style="
+                background: white; border-radius: 12px; overflow: hidden;
+                box-shadow: 0 3px 12px rgba(0,0,0,0.09);
+                border: 1px solid #ecf0f1;
+                transition: transform 0.18s, box-shadow 0.18s;
+            "
+            onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'"
+            onmouseout="this.style.transform=''; this.style.boxShadow='0 3px 12px rgba(0,0,0,0.09)'">
+                <div style="height:160px; overflow:hidden; background:#ecf0f1;">
+                    <img src="${src}"
+                         data-fallback1="${fallbackPng}"
+                         data-fallback2="${fallbackJpg}"
+                         onerror="if(this.src!==this.dataset.fallback1&&this.src!==this.dataset.fallback2){this.src=this.src.endsWith('.png')?this.dataset.fallback2:this.dataset.fallback1}else{this.src='placeholderimg.jpg';this.onerror=null}"
+                         alt="${displayName}"
+                         style="width:100%; height:100%; object-fit:cover; object-position:top;">
+                </div>
+                <div style="padding:10px 12px; text-align:center;">
+                    <div style="font-weight:700; color:#2c3e50; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.3px;">${displayName}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    panel.innerHTML = `
+        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:14px; padding:20px;">
+            ${cards}
+        </div>
+    `;
+}
+
+function showOrgChart() {
+    const cardGrid = document.getElementById('card-grid');
+
+    // Build department tab buttons
+    const tabsHtml = ORG_DEPARTMENTS.map((dept, i) => `
+        <button class="org-dept-tab" onclick="renderOrgDepartment(${i})" style="
+            background: rgba(255,255,255,0.12);
+            border: none; color: white;
+            padding: 8px 14px; border-radius: 20px;
+            cursor: pointer; font-size: 0.82rem; font-weight: 500;
+            transition: transform 0.15s, background 0.15s;
+            white-space: nowrap;
+        ">${dept.icon} ${dept.label}</button>
+    `).join('');
+
+    cardGrid.innerHTML = `
+        <!-- Back bar -->
+        <div class="card" style="grid-column: 1 / -1; display:flex; align-items:center; gap:15px; background:linear-gradient(to right, #1f6dad, #2980b9); color:white; border-radius:12px;">
+            <button onclick="AboutUs()" style="background:rgba(255,255,255,0.2); border:none; color:white; padding:10px 15px; border-radius:5px; cursor:pointer; font-size:1rem;">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <h3 style="margin:0; border:none; color:white;"><i class="fas fa-sitemap"></i> School Organizational Chart</h3>
+        </div>
+
+        <!-- Principal highlight card -->
+        <div class="card" style="grid-column: 1 / -1; border-radius:14px; overflow:hidden; box-shadow:0 6px 24px rgba(0,0,0,0.10); border:1px solid rgba(76,161,175,0.22);">
+            <div style="background:linear-gradient(90deg,#2c3e50,#4ca1af); padding:16px 22px; color:white;">
+                <h3 style="margin:0; border:none; color:white; font-size:1.15rem;"><i class="fas fa-user-tie"></i> School Principal</h3>
+            </div>
+            <div style="padding:28px 24px; display:flex; align-items:center; gap:28px; flex-wrap:wrap;">
+                <!-- Principal photo -->
+                <div style="
+                    flex-shrink:0; width:180px; height:220px;
+                    border-radius:16px; overflow:hidden;
+                    box-shadow:0 8px 28px rgba(0,0,0,0.18);
+                    border:4px solid #4ca1af;
+                ">
+                    <img src="Principal.jpg" onerror="this.src='placeholderimg.jpg'" alt="School Principal"
+                         style="width:100%; height:100%; object-fit:cover; object-position:top;">
+                </div>
+                <div style="flex:1; min-width:200px;">
+                    <h3 style="margin:0 0 4px; color:#2c3e50; font-size:1.3rem;">G. Noly B. Francisco</h3>
+                    <p style="margin:0 0 4px; color:#546e7a; font-size:0.95rem; font-weight:600;">School Principal</p>
+                    <p style="margin:0 0 14px; color:#546e7a; font-size:0.9rem;">Makati High School — Makati City</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accuracy warning banner -->
+        <div class="card" style="grid-column: 1 / -1; background:linear-gradient(135deg,#fff3cd,#ffeeba); border-radius:12px; border-left:6px solid #f39c12; padding:18px 22px;">
+            <div style="display:flex; align-items:flex-start; gap:14px;">
+                <span style="font-size:2rem; flex-shrink:0;">⚠️</span>
+                <div>
+                    <h4 style="margin:0 0 6px; color:#856404; font-size:1rem;"><strong>Accuracy Notice</strong></h4>
+                    <p style="margin:0; font-size:0.88rem; color:#7d5e00; line-height:1.65;">
+                        The photos and names shown below are sourced from the official Makati High School website. Since the website has not been updated recently, some information — including staff assignments, photos, and names — <strong>may no longer be accurate or current</strong>. Please verify with the school administration for the most up-to-date information.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Department tabs + photo panel -->
+        <div class="card" style="grid-column: 1 / -1; border-radius:14px; overflow:hidden; box-shadow:0 4px 18px rgba(0,0,0,0.08); padding:0;">
+            <!-- Tab bar -->
+            <div style="background:linear-gradient(90deg,#1f6dad,#2980b9); padding:16px 18px; display:flex; flex-wrap:wrap; gap:8px;">
+                ${tabsHtml}
+            </div>
+            <!-- Staff photo grid (populated by renderOrgDepartment) -->
+            <div id="org-dept-panel" style="background:#f8fafc; min-height:200px;"></div>
+        </div>
+    `;
+
+    const modal = document.getElementById('assistant-modal');
+    if (modal) modal.style.display = 'none';
+
+    // Default to Administration tab
+    renderOrgDepartment(0);
+}
+
 function readAnnouncements() {
     const cardGrid = document.getElementById('card-grid');
 
     // Default Announcements (school announcements)
     const defaultAnnouncements = [
-        "Fourth Quarter Exams scheduled for March 19 and 20, 2026",
+        "Fourth Quarter Exams scheduled for March 12 and 13, 2026",
         "End-of-School-Year Rites on March 30-31, 2026",
         "Parent-Teacher Conference after quarterly exams",
         "Submit all clearance requirements before EOSY Rites",

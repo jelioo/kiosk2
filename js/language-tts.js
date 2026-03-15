@@ -16,7 +16,7 @@ const translations = {
         school_name: "Makati High School",
         subtitle: "Smart Kiosk - Enhanced Navigation & Information System",
         welcome: "Welcome to Makati High School",
-        search_placeholder: "Search for rooms, people...",
+        search_placeholder: "Search here!",
         nav: {
             home: "Home",
             directory: "Campus Directory",
@@ -161,10 +161,10 @@ const translations = {
         school_name: "Mataas na Paaralang Makati",
         subtitle: "Matalinong Kiosko - Pinalakas na Sistema ng Nabigasyon at Impormasyon",
         welcome: "Maligayang Pagdating sa Mataas na Paaralang Makati",
-        search_placeholder: "Maghanap ng silid, tao...",
+        search_placeholder: "Maghanap dito!",
         nav: {
             home: "Tahanan",
-            directory: "Direktoryo ng Kampus",
+            directory: "Direktoryo ng Paaralan",
             events: "Mga Kaganapan",
             about: "Tungkol sa Amin",
             news: "Balita",
@@ -174,13 +174,13 @@ const translations = {
         headers: {
             upcoming_events: "Mga Paparating na Kaganapan",
             announcements: "Mga Anunsyo",
-            campus_directory: "Direktoryo ng Kampus",
+            campus_directory: "Direktoryo ng Paaralan",
             search_results: "Resulta ng Paghahanap",
             no_results: "Walang Nakitang Resulta",
             navigation: "Nabigasyon",
             directions: "Mga Direksyon",
             staff_directory: "Kumpletong Direktoryo ng mga Kawani",
-            campus_news: "Balita sa Kampus",
+            campus_news: "Balita sa Paaralan",
             ai_assistant: "AI na Katulong",
             help_center: "Sentro ng Tulong",
             user_guide: "Gabay sa Paggamit",
@@ -245,7 +245,7 @@ const translations = {
         about: {
             title: "Tungkol sa Mataas na Paaralang Makati",
             subtitle: "Kasaysayan, Misyon, Bisyon, at mga Halagahin",
-            history: "Kasaysayan",
+            history: "Kasaysayan ng Paaralan",
             history_text: "Ang Mataas na Paaralang Makati (MHS) ay itinatag noong 1968 at mula noon ay naging isa sa mga nangungunang pampublikong sekundaryang paaralan sa Lungsod ng Makati. Sa mahigit limang dekada, ang MHS ay nagbigay ng de-kalidad na edukasyon sa libu-libong mag-aaral, tinatangkilik ang kahusayan sa akademiko, paghubog ng karakter, at paglilingkod sa pamayanan.",
             mission: "Misyon",
             mission_text: "Iprotektahan at itaguyod ang karapatan ng bawat Pilipino sa de-kalidad, makatarungang, kulturang batayang, at kumpletong batayang edukasyon kung saan ang mga mag-aaral ay natututo sa isang friendly sa bata, sensitibo sa kasarian, ligtas, at motibasyonal na kapaligiran, at kung saan ang mga guro ay nagpapadaloy ng pagkatuto at palagiang nag-aalaga sa bawat mag-aaral.",
@@ -435,7 +435,7 @@ function toggleLanguage() {
 // Update all UI text
 function updateUILanguage() {
     // Update button text
-    document.getElementById('lang-display').textContent = currentLang === 'en' ? 'English' : 'Tagalog';
+    document.getElementById('lang-display').textContent = currentLang === 'en' ? 'English' : 'Filipino';
 
     // Update elements with data-translate attribute
     document.querySelectorAll('[data-translate]').forEach(el => {
